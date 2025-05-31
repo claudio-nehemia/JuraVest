@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -7,14 +7,32 @@ import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+    RadioGroup,
+    RadioGroupItem
+} from '@/components/ui/radio-group';
 import AuthLayout from '@/layouts/auth-layout';
 
+// Definisikan interface untuk Role
+interface Role {
+    id: number;
+    role_name: string;
+}
+
+// Update type RegisterForm untuk include role_id
 type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
+    role_id: string; // Tambahkan role_id di sini
 };
+
+// Definisikan interface untuk page props
+interface PageProps {
+    roles: Role[];
+    [key:string]:any;
+}
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
@@ -22,6 +40,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        role_id: '' // Sekarang role_id sudah terdefinisi dalam type
     });
 
     const submit: FormEventHandler = (e) => {
@@ -30,6 +49,9 @@ export default function Register() {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
+
+    // Type assertion untuk roles dari props
+    const { roles } = usePage<PageProps>().props;
 
     return (
         <AuthLayout title="Create an account" description="Enter your details below to create your account">
@@ -99,6 +121,28 @@ export default function Register() {
                             placeholder="Confirm password"
                         />
                         <InputError message={errors.password_confirmation} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Role</Label>
+                        <RadioGroup 
+                            name="role_id" 
+                            value={data.role_id}
+                            onValueChange={(value) => setData('role_id', value)}
+                        >
+                            {roles?.map((role: Role) => (
+                                <div key={role.id} className="flex items-center space-x-2">
+                                    <RadioGroupItem 
+                                        value={role.id.toString()} 
+                                        id={`role-${role.id}`}
+                                    />
+                                    <Label htmlFor={`role-${role.id}`}>
+                                        {role.role_name}
+                                    </Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                        <InputError message={errors.role_id} />
                     </div>
 
                     <Button type="submit" className="mt-2 w-full" tabIndex={5} disabled={processing}>
