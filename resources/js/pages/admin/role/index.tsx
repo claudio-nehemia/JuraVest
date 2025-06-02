@@ -54,7 +54,7 @@ export default function RoleList({ roles }: RoleListProps) {
                         <h1 className='text-2x1 font-bold'>
                             Roles
                         </h1>
-                        <Link href='/admin/roles/create'>
+                        <Link href='/admin/role/create'>
                             <Button className='flex items-center gap-2'>
                                 <PlusCircle className='h-4 w-4'/>
                                     Tambah Role
@@ -86,7 +86,7 @@ export default function RoleList({ roles }: RoleListProps) {
                                         <div className='flex justify-center space-x-2'>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
-                                                    <Link href={`/admin/roles/${role.id}/edit`}>
+                                                    <Link href={`/admin/role/${role.id}/edit`}>
                                                     <Button size="icon" variant="outline" className="bg-green-600 text-white hover:bg-green-700">
                                                         <Pencil className="h-4 w-4" />
                                                     </Button>

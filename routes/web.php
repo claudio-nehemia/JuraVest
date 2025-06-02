@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\JenisUsahaController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TargetPasarController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,8 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::prefix('admin')->group(function(){
-        Route::resource('role', RoleController::class);
-        Route::resource('user', UserController::class);
+        Route::resource('role', RoleController::class)->except(['show']);
+        Route::resource('user', UserController::class)->except(['show']);
+        Route::resource('jenis_usaha', JenisUsahaController::class)->except(['show']);
+        Route::resource('target_pasar', TargetPasarController::class)->except('show');
 });
 });
 
