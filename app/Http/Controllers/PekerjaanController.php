@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wirausaha;
+use App\Models\Pekerjaan;
 use Illuminate\Http\Request;
 
-class WirausahaController extends Controller
+class PekerjaanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        
+        //
     }
 
     /**
@@ -34,7 +34,7 @@ class WirausahaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Wirausaha $wirausaha)
+    public function show(Pekerjaan $pekerjaan)
     {
         //
     }
@@ -42,7 +42,7 @@ class WirausahaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Wirausaha $wirausaha)
+    public function edit(Pekerjaan $pekerjaan)
     {
         //
     }
@@ -50,7 +50,7 @@ class WirausahaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Wirausaha $wirausaha)
+    public function update(Request $request, Pekerjaan $pekerjaan)
     {
         //
     }
@@ -58,7 +58,7 @@ class WirausahaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Wirausaha $wirausaha)
+    public function destroy(Pekerjaan $pekerjaan)
     {
         //
     }

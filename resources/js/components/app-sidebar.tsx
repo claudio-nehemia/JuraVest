@@ -22,6 +22,16 @@ const mainNavItems: NavItem[] = [
         title: 'User',
         href: '/admin/user',
         icon: LayoutGrid
+    },
+    {
+        title: 'Jenis Usaha',
+        href: '/admin/jenis_usaha',
+        icon: LayoutGrid
+    },
+    {
+        title: 'Target Pasar',
+        href: '/admin/target_pasar',
+        icon: LayoutGrid
     }
 ];
 

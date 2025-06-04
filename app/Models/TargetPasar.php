@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class TargetPasar extends Model
 {
     protected $fillable = [
-        'target_pasar'
+        'target_pasar',
+        'icon'
     ];
 
-    public function wirausahas() {
-        return $this->hasMany(Wirausaha::class);
-    }
+    
 }

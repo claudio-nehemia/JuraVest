@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\TargetPasar;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class TargetPasarController extends Controller
 {
@@ -14,7 +15,7 @@ class TargetPasarController extends Controller
     public function index()
     {
         return Inertia::render('admin/target_pasar/index', [
-            'target_pasars' => TargetPasar::withCount('wirausahas')->get()
+            'targetPasars' => TargetPasar::all()
         ]);
     }
 
@@ -34,8 +35,13 @@ class TargetPasarController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'target_pasar' => 'required|string|max:50'
+            'target_pasar' => 'required|string|max:50',
+            'icon' => 'nullable|image'
         ]);
+
+        if($request->hasFile('icon')) {
+            $validated['icon'] = $request->file('icon')->store('target_icons','public');
+        }
 
         TargetPasar::create($validated);
 
@@ -60,9 +66,18 @@ class TargetPasarController extends Controller
     public function update(Request $request, TargetPasar $targetPasar)
     {
         $validated = $request->validate([
-            'target_pasar' => 'required|string|max:50'
+            'target_pasar' => 'required|string|max:50',
+            'icon' => 'nullable|image'
         ]);
 
+        if($request->hasFile('icon')) {
+            if($targetPasar->icon) {
+                Storage::disk('public')->delete($targetPasar->icon);
+            }
+            $validated['icon'] = $request->file('icon')->store('target_icons','public');
+        } else {
+            unset($validated['icon']);
+        }
         $targetPasar->update($validated);
 
         return redirect()->route('target_pasar.index')->with('success','Target Pasar Berhasil Diperbarui');
@@ -73,6 +88,10 @@ class TargetPasarController extends Controller
      */
     public function destroy(TargetPasar $targetPasar)
     {
+        if($targetPasar->icon) {
+            Storage::disk('public')->delete($targetPasar->icon);
+        }
+
         $targetPasar->delete();
 
         return redirect()->route('target_pasar.index')->with('success','Target Pasar Berhasil Dihapus');
