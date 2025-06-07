@@ -10,5 +10,7 @@ class Pekerjaan extends Model
         'job'
     ];
 
-    
+    public function dataDiris() {
+        return $this->hasMany('data_diri');
+    }
 }

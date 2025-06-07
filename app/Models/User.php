@@ -51,7 +51,8 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function wirausaha() {
-        return $this->hasOne(Wirausaha::class);
+    public function dataDiris() 
+    {
+        return $this->hasOne(DataDiri::class);
     }
 }

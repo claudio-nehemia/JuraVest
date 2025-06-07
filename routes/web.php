@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\JenisUsahaController;
+use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TargetPasarController;
 use App\Http\Controllers\UserController;
@@ -10,6 +12,11 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
+
+Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->name('register1');
+Route::get('setPassword', function(){
+    return Inertia::render('auth/register/step2SetPassword');
+})->name('register2');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
@@ -21,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('user', UserController::class)->except(['show']);
         Route::resource('jenis_usaha', JenisUsahaController::class)->except(['show']);
         Route::resource('target_pasar', TargetPasarController::class)->except('show');
+        Route::resource('pekerjaan', PekerjaanController::class)->except('show');
 });
 });
 

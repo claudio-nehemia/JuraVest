@@ -27,6 +27,10 @@ class RegisteredUserController extends Controller
         ]);
     }
 
+    public function showBasicInfo() {
+        return Inertia::render('auth/register/step1BasicInfo');
+    }
+
     /**
      * Handle an incoming registration request.
      *
