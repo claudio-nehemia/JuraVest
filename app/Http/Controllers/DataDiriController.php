@@ -14,7 +14,7 @@ class DataDiriController extends Controller
      * Display a listing of the resource.
      */
     private $pendidikan_terakhir = ['SD', 'SMP', 'SMA', 'D3', 'S1', 'S2', 'S3'];
-    private $jenis_kelamin = ['Laki-laki', 'Perempuan'];
+    private $jenis_kelamin = ['Laki-Laki', 'Perempuan'];
     
     public function index()
     {

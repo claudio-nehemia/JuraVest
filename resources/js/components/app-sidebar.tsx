@@ -32,6 +32,16 @@ const mainNavItems: NavItem[] = [
         title: 'Target Pasar',
         href: '/admin/target_pasar',
         icon: LayoutGrid
+    },
+    {
+        title: 'Pekerjaan',
+        href: '/admin/pekerjaan',
+        icon: LayoutGrid
+    },
+    {
+        title: 'Data Diri',
+        href: '/admin/dataDiri',
+        icon: LayoutGrid
     }
 ];
 

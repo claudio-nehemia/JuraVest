@@ -14,7 +14,7 @@ class PekerjaanController extends Controller
     public function index()
     {
         return Inertia::render('admin/pekerjaan/index',[
-            'pekerjaans' => Pekerjaan::withCount('wirausahas')->get()
+            'pekerjaans' => Pekerjaan::all()
         ]);
     }
 
@@ -37,7 +37,7 @@ class PekerjaanController extends Controller
             'job' => 'required|string|max:30'
         ]);
 
-        Pekerjaan::store($validated);
+        Pekerjaan::create($validated);
 
         return redirect()->route('pekerjaan.index')->with('success', 'Pekerjaan Berhasil Ditambahkan');
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DataDiriController;
 use App\Http\Controllers\JenisUsahaController;
 use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\RoleController;
@@ -29,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('jenis_usaha', JenisUsahaController::class)->except(['show']);
         Route::resource('target_pasar', TargetPasarController::class)->except('show');
         Route::resource('pekerjaan', PekerjaanController::class)->except('show');
+        Route::resource('dataDiri', DataDiriController::class)->except('show');
 });
 });
 
