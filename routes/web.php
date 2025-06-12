@@ -18,6 +18,9 @@ Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->nam
 Route::get('setPassword', function(){
     return Inertia::render('auth/register/step2SetPassword');
 })->name('register2');
+Route::get('setRole', function(){
+    return Inertia::render('auth/register/step3SetRole');
+})->name('register3');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
