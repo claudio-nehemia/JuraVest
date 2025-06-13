@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(DataDiri::class);
     }
+
+    public function wirausaha() 
+    {
+        return $this->hasOne(Wirausaha::class);
+    }
 }

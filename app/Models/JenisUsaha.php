@@ -11,4 +11,7 @@ class JenisUsaha extends Model
         'icon'
     ];
 
+    public function wirausahas() {
+        return $this->hasMany(Wirausaha::class);
+    }
 }
