@@ -1,5 +1,4 @@
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
 // debug umkm_status
 // import { useState, useEffect } from 'react';
 
@@ -9,15 +8,15 @@ interface Role {
     image: string;
 }
 
-interface Step2RoleProps {
-    onNext: (data: { role_id: number; umkm_status?: string | null }) => void;
+interface Step3RoleProps {
+    onNext: (data: { role_id: number }) => void;
     onBack: () => void;
     userData: Record<string, any>;
 }
-export default function Step2RoleSelection({ onNext, onBack, userData }: Step2RoleProps) {
-    const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
-    const [processing, setProcessing] = useState(false);
-    const [umkmStatus, setUmkmStatus] = useState<string | null>(null);
+export default function Step3RoleSelection({ onNext, onBack, userData }: Step3RoleProps) {
+    const { data, setData, processing } = useForm({
+        role_id: null as number | null,
+    });
 
     const roles: Role[] = [
         {
@@ -33,36 +32,14 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
         },
     ];
 
-    const handleSubmit = () => {
-        // tanpa umkm_status
-        // if (selectedRoleId !== null) {
-        //     setProcessing(true);
-        //     onNext({ role_id: selectedRoleId });
-        // } else {
-        //     alert('Silahkan pilih jenis pengguna terlebih dahulu');
-        // }
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 
-        if (selectedRoleId === null) {
-            alert('Silakan pilih jenis pengguna terlebih dahulu');
-            return;
+        if (data.role_id !== null) {
+            onNext({ role_id: data.role_id });
+        } else {
+            alert('Silahkan pilih jenis pengguna terlebih dahulu');
         }
-
-        if (selectedRoleId === 1 && umkmStatus === null) {
-            alert('Silakan pilih status UMKM terlebih dahulu');
-            return;
-        }
-
-        setProcessing(true);
-
-        const payload: any = {
-            role_id: selectedRoleId,
-        };
-
-        if (selectedRoleId === 1) {
-            payload.umkm_status = umkmStatus;
-        }
-
-        onNext(payload);
     };
 
     // debug umkm_status
@@ -72,11 +49,12 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
-            <Head title="Daftar - Buat Password" />
+            <Head title="Daftar - Pilih Role" />
 
             <div className="w-full max-w-md">
                 {/* Progress Bar */}
                 <div className="mb-8">
+                    <span className="justify-center text-sm font-medium text-blue-600">DAFTAR AKUN</span>
                     <div className="mb-2 flex items-center justify-between">
                         <span className="text-sm font-medium text-blue-600">Langkah 3 dari 4</span>
                         <span className="text-sm text-gray-500">75%</span>
@@ -108,9 +86,9 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
                         {roles.map((role) => (
                             <div
                                 key={role.id}
-                                onClick={() => setSelectedRoleId(role.id)}
+                                onClick={() => setData('role_id', role.id)}
                                 className={`cursor-pointer rounded-2xl border p-6 text-center shadow-sm transition-all duration-300 hover:shadow-md ${
-                                    selectedRoleId === role.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'
+                                    data.role_id === role.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'
                                 }`}
                             >
                                 <img src={role.image} alt={role.role_name} className="mx-auto mb-4 h-35 w-20 object-contain" />
@@ -119,7 +97,7 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
                         ))}
                     </div>
 
-                    {selectedRoleId === 1 && (
+                    {/* {selectedRoleId === 1 && (
                         <div className="mt-4 mb-4">
                             <p className="mb-2 text-center font-medium">Apakah UMKM anda sudah berjalan?</p>
                             <div className="flex justify-center space-x-4">
@@ -143,24 +121,26 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
                                 </button>
                             </div>
                         </div>
-                    )}
+                    )} */}
 
-                    <div className="flex space-x-4">
-                        <button
-                            type="button"
-                            onClick={onBack}
-                            className="flex-1 rounded-lg bg-gray-100 px-4 py-3 font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-200"
-                        >
-                            Kembali
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                            {processing ? 'Memproses...' : 'Lanjutkan'}
-                        </button>
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="flex space-x-4">
+                            <button
+                                type="button"
+                                onClick={onBack}
+                                className="flex-1 rounded-lg bg-gray-100 px-4 py-3 font-semibold text-gray-700 transition-colors duration-200 hover:bg-gray-200"
+                            >
+                                Kembali
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={processing}
+                                className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                {processing ? 'Memproses...' : 'Lanjutkan'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
