@@ -9,12 +9,12 @@ interface Role {
     image: string;
 }
 
-interface Step2RoleProps {
+interface Step3RoleProps {
     onNext: (data: { role_id: number; umkm_status?: string | null }) => void;
     onBack: () => void;
     userData: Record<string, any>;
 }
-export default function Step2RoleSelection({ onNext, onBack, userData }: Step2RoleProps) {
+export default function Step3RoleSelection({ onNext, onBack, userData }: Step3RoleProps) {
     const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
     const [processing, setProcessing] = useState(false);
     const [umkmStatus, setUmkmStatus] = useState<string | null>(null);
@@ -72,7 +72,7 @@ export default function Step2RoleSelection({ onNext, onBack, userData }: Step2Ro
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
-            <Head title="Daftar - Buat Password" />
+            <Head title="Daftar - Pilih Role" />
 
             <div className="w-full max-w-md">
                 {/* Progress Bar */}
