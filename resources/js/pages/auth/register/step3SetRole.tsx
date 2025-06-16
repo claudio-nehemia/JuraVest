@@ -77,6 +77,7 @@ export default function Step3RoleSelection({ onNext, onBack, userData }: Step3Ro
             <div className="w-full max-w-md">
                 {/* Progress Bar */}
                 <div className="mb-8">
+                    <span className='justify-center text-sm font-medium text-blue-600'>DAFTAR AKUN</span>
                     <div className="mb-2 flex items-center justify-between">
                         <span className="text-sm font-medium text-blue-600">Langkah 3 dari 4</span>
                         <span className="text-sm text-gray-500">75%</span>
@@ -119,7 +120,7 @@ export default function Step3RoleSelection({ onNext, onBack, userData }: Step3Ro
                         ))}
                     </div>
 
-                    {selectedRoleId === 1 && (
+                    {/* {selectedRoleId === 1 && (
                         <div className="mt-4 mb-4">
                             <p className="mb-2 text-center font-medium">Apakah UMKM anda sudah berjalan?</p>
                             <div className="flex justify-center space-x-4">
@@ -143,7 +144,7 @@ export default function Step3RoleSelection({ onNext, onBack, userData }: Step3Ro
                                 </button>
                             </div>
                         </div>
-                    )}
+                    )} */}
 
                     <div className="flex space-x-4">
                         <button
