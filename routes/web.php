@@ -22,6 +22,9 @@ Route::get('setPassword', function(){
 Route::get('setRole', function(){
     return Inertia::render('auth/register/step3SetRole');
 })->name('register3');
+Route::get('setStatusUsaha', function(){
+    return Inertia::render('auth/register/step5SetStatusUsaha');
+})->name('register5');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
