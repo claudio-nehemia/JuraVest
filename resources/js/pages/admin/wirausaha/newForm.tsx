@@ -23,6 +23,7 @@ interface UsahaBaruData {
   latar_belakang: string;
 }
 
+// Add index signature to make it compatible with Inertia's FormDataType
 interface FormData {
   user_id: string | number;
   nama_usaha: string;
@@ -30,6 +31,7 @@ interface FormData {
   target_pasar_id: string | number;
   tipe_usaha: string;
   usaha_baru: UsahaBaruData;
+  [key: string]: any; // This fixes the TypeScript error
 }
 
 interface Props extends PageProps {
@@ -91,7 +93,7 @@ export default function NewForm({
     for (const field of requiredMainFields) {
       const value = data[field];
       if (!value || value.toString().trim() === '') {
-        alert(`Field ${field.replace('_', ' ')} wajib diisi!`);
+        alert(`Field ${String(field).replace('_', ' ')} wajib diisi!`);
         return;
       }
     }
@@ -108,7 +110,7 @@ export default function NewForm({
     for (const field of requiredBaruFields) {
       const value = data.usaha_baru[field];
       if (!value || value.toString().trim() === '') {
-        alert(`Field ${field.replace('_', ' ')} wajib diisi!`);
+        alert(`Field ${String(field).replace('_', ' ')} wajib diisi!`);
         return;
       }
     }

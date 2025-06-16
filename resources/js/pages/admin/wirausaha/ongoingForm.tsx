@@ -33,6 +33,7 @@ interface FormData {
   target_pasar_id: string | number;
   tipe_usaha: string;
   usaha_ongoing: UsahaOngoingData;
+  [key:string]:any;
 }
 
 interface Props extends PageProps {
@@ -97,7 +98,7 @@ export default function OngoingForm({
     for (const field of requiredMainFields) {
       const value = data[field];
       if (!value || value.toString().trim() === '') {
-        alert(`Field ${field.replace('_', ' ')} wajib diisi!`);
+        alert(`Field ${String(field).replace('_', ' ')} wajib diisi!`);
         return;
       }
     }
