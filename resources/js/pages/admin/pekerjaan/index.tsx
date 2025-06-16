@@ -40,7 +40,7 @@ export default function Pekerjaan({ pekerjaans }: PekerjaanProps) {
 
     const handleDelete = (id: number) => {
         if (confirm('Yakin ingin menghapus pekerjaan ini?')){
-            destroy(`admin/pekerjaan/${id}`);
+            destroy(`/admin/pekerjaan/${id}`);
         }
     };
 

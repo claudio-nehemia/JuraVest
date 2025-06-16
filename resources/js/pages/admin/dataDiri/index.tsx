@@ -57,7 +57,7 @@ export default function Pekerjaan({ dataDiris }: PageProps) {
 
     const handleDelete = (id: number) => {
         if (confirm('Yakin ingin menghapus data ini?')){
-            destroy(`admin/dataDiri/${id}`);
+            destroy(`/admin/dataDiri/${id}`);
         }
     };
 

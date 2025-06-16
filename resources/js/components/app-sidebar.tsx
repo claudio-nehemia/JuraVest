@@ -42,6 +42,21 @@ const mainNavItems: NavItem[] = [
         title: 'Data Diri',
         href: '/admin/dataDiri',
         icon: LayoutGrid
+    },
+    {
+        title: 'Wirausaha',
+        href: '/admin/wirausaha',
+        icon: LayoutGrid
+    },
+    {
+        title: 'Wirausaha Berjalan',
+        href: '/admin/wirausaha/ongoingIndex',
+        icon: LayoutGrid
+    },
+    {
+        title: 'Wirausaha Baru',
+        href: '/admin/wirausaha/newIndex',
+        icon: BookOpen
     }
 ];
 

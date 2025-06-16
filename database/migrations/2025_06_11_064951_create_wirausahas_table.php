@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('nama_usaha');
             $table->foreignId('jenis_usaha_id')->constrained('jenis_usahas')->onDelete('cascade');
             $table->foreignId('target_pasar_id')->constrained('target_pasars')->onDelete('cascade');
-               $table->enum('tipe_usaha',['Usaha Baru', 'Usaha Ongoing']);
-            $table->jsonb('usaha_baru');
-            $table->jsonb('usaha_ongoing');
+            $table->enum('tipe_usaha',['Usaha Baru', 'Usaha Ongoing']);
+            $table->jsonb('usaha_baru')->nullable();
+            $table->jsonb('usaha_ongoing')->nullable();
             $table->timestamps();
         });
     }

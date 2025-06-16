@@ -41,7 +41,7 @@ export default function RoleList({ roles }: RoleListProps) {
 
     const handleDelete = (id: number) => {
         if (confirm('Yakin ingin menghapus role ini?')){
-            destroy(`admin/role/${id}`);
+            destroy(`/admin/role/${id}`);
         }
     };
 

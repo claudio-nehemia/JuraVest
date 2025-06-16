@@ -7,6 +7,7 @@ use App\Http\Controllers\PekerjaanController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TargetPasarController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WirausahaController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,6 +35,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('target_pasar', TargetPasarController::class)->except('show');
         Route::resource('pekerjaan', PekerjaanController::class)->except('show');
         Route::resource('dataDiri', DataDiriController::class)->except('show');
+        Route::resource('wirausaha', WirausahaController::class)->only(['index','destroy']);
+        Route::get('wirausaha/newIndex', [WirausahaController::class,'newIndex'])->name('newWirausaha.index');
+        Route::get('wirausaha/ongoingIndex', [WirausahaController::class, 'ongoingIndex'])->name('ongoingWirausaha.index');
+        Route::get('wirausaha/ongoingCreate', [WirausahaController::class, 'ongoingCreate'])->name('ongoing.create');
+        Route::get('wirausaha/newCreate', [WirausahaController::class, 'newCreate'])->name('new.create');
+        Route::post('wirausaha/newStore',[WirausahaController::class,'newStore'])->name('new.store');
+        Route::post('wirausaha/ongoingStore',[WirausahaController::class,'ongoingStore'])->name('ongoing.store');
+        Route::get('wirausaha/newEdit/{wirausaha}/edit',[WirausahaController::class, 'newEdit'])->name('new.edit');
+        Route::get('wirausaha/ongoingEdit/{wirausaha}/edit', [WirausahaController::class, 'ongoingEdit'])->name('ongoing.edit');
+        Route::put('wirausaha/ongoingUpdate/{wirausaha}', [WirausahaController::class, 'ongoingUpdate'])->name('ongoing.update');
+        Route::put('wirausaha/newUpdate/{wirausaha}', [WirausahaController::class, 'newUpdate'])->name('new.update');
 });
 });
 

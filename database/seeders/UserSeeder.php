@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
 
         $userData = [
             ['name' => 'Claudio Nehemia', 'email' => 'clauu@example.com', 'password' => 'password', 'role_name' => 'Admin'],
-            ['name' => 'Andi Putra', 'email' => 'andi@example.com', 'password' => 'password', 'role_name' => 'UMKM'],
+            ['name' => 'Andi Putra', 'email' => 'andi@example.com', 'password' => 'password', 'role_name' => 'Wirausaha'],
             ['name' => 'Glory', 'email' => 'glory@example.com', 'password' => 'password', 'role_name' => 'Investor'],
         ];
 
