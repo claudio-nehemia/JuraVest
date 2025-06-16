@@ -382,7 +382,7 @@ export default function OngoingForm({
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => router.visit('/admin/wirausaha/ongoing')}
+                onClick={() => router.visit('/admin/wirausaha/ongoingIndex')}
               >
                 Batal
               </Button>

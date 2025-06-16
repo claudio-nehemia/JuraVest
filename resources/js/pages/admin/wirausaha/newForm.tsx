@@ -326,7 +326,7 @@ export default function NewForm({
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => router.visit('/admin/wirausaha/new')}
+                onClick={() => router.visit('/admin/wirausaha/newIndex')}
               >
                 Batal
               </Button>
