@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import InputError from '@/components/input-error';
 import {
     Card,
     CardContent,
@@ -16,6 +17,8 @@ import {
 interface Role {
     id?: number;
     role_name: string;
+    icon: string | null;
+    icon_url: string | null
 }
 
 interface Props {
@@ -29,14 +32,16 @@ const RoleForm = () => {
 
     // ✅ FIXED: Ubah field name menjadi role_name
     const { data, setData, post, put, processing, errors } = useForm({
+        ...(mode==='edit' ? { _method: 'put' } : {}),
         role_name: role?.role_name ?? '',
+        icon: null as File | null
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (mode === 'edit' && role?.id) {
-            put(`/admin/role/${role.id}`, {
+            post(`/admin/role/${role.id}`, {
                 preserveScroll: true,
             });
         } else {
@@ -70,6 +75,20 @@ const RoleForm = () => {
                             />
                             {errors.role_name && <div className="text-sm text-red-600">{errors.role_name}</div>}
                         </div>
+                        <div className="flex flex-col space-y-0.5 mb-2">
+                        <Label>Icon</Label>
+                            {mode==='edit' && role?.icon_url && (
+                            <img src={role.icon_url} alt={role.role_name} className="mb-2 h-32 w-32 rounded object-cover border" />
+                                )}
+                                <Input 
+                                    type="file" 
+                                    accept="image/*"
+                                    onChange={(e) => setData('icon', e.target.files?.[0] || null)} 
+                                />
+                                <div className="min-h-[1rem]">
+                                    {errors.icon && <InputError message={errors.icon} />}
+                                </div>
+                    </div>
                     </CardContent>
 
                     <CardFooter className="flex gap-2">

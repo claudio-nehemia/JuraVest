@@ -11,10 +11,36 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
+    Route::prefix('register')->group(function(){
+        // Halaman utama multi-step register
+        Route::get('/', [RegisteredUserController::class, 'create'])
+            ->name('register');
+        
+        // Halaman individual steps (opsional, jika ingin diakses langsung)
+        Route::get('basic-info', [RegisteredUserController::class, 'showBasicInfo']) 
+            ->name('register.basicInfo');
+        Route::get('set-password', [RegisteredUserController::class, 'showPassword'])
+            ->name('register.password');
+        Route::get('set-role', [RegisteredUserController::class, 'setRole'])
+            ->name('register.role');
+        
+        // API endpoints untuk multi-step register
+        Route::post('basic-info', [RegisteredUserController::class, 'storeBasicInfo']) 
+            ->name('register.store-basicInfo');
+        
+        Route::post('set-password', [RegisteredUserController::class, 'storePassword'])
+            ->name('register.store-password');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::post('registration', [RegisteredUserController::class, 'store'])
+            ->name('register.store');
+
+        // Endpoint untuk mengambil data registrasi dari session
+        Route::get('data', [RegisteredUserController::class, 'getRegistrationData'])
+            ->name('register.get-data');
+            
+        Route::delete('clear', [RegisteredUserController::class, 'clearRegistrationData'])
+            ->name('register.clear-data');
+    });
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
