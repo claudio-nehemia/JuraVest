@@ -35,14 +35,27 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         });
     };
 
-    return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
-            <Head title="Log in" />
+return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+        <Head title="Log in" />
 
-            <form className="flex flex-col gap-6" onSubmit={submit}>
-                <div className="grid gap-6">
-                    <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+        <div className="w-full max-w-md">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <div className="text-center mb-8">
+                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Selamat Datang!</h2>
+                    <p className="text-gray-600">Masukkan email dan kata sandi Anda untuk masuk</p>
+                </div>
+
+                <form className="space-y-6" onSubmit={submit}>
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                            Email <span className="text-red-500">*</span>
+                        </label>
                         <Input
                             id="email"
                             type="email"
@@ -53,13 +66,16 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"
+                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 border-gray-300 hover:border-gray-400"
                         />
                         <InputError message={errors.email} />
                     </div>
 
-                    <div className="grid gap-2">
+                    <div>
                         <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                                Password <span className="text-red-500">*</span>
+                            </label>
                             {canResetPassword && (
                                 <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
                                     Forgot password?
@@ -75,6 +91,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
                             placeholder="Password"
+                            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 border-gray-300 hover:border-gray-400"
                         />
                         <InputError message={errors.password} />
                     </div>
@@ -90,21 +107,36 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
-                    </Button>
-                </div>
+                    <button
+                        type="submit"
+                        disabled={processing || !data.email.trim() || !data.password.trim()}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        tabIndex={4}
+                    >
+                        {processing ? (
+                            <>
+                                <LoaderCircle className="animate-spin h-5 w-5 mr-2" />
+                                Memproses...
+                            </>
+                        ) : (
+                            <>Masuk</>
+                        )}
+                    </button>
 
-                <div className="text-muted-foreground text-center text-sm">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
-                    </TextLink>
-                </div>
-            </form>
+                    <div className="text-center">
+                        <p className="text-sm text-gray-600">
+                            Belum punya akun?{' '}
+                            <TextLink href={route('register')} tabIndex={5}>
+                                Daftar di sini
+                            </TextLink>
+                        </p>
+                    </div>
+                </form>
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
-        </AuthLayout>
-    );
+                {status && <div className="mt-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            </div>
+        </div>
+    </div>
+);
+
 }
