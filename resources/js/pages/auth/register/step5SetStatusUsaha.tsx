@@ -1,5 +1,6 @@
-import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
+// import { useState } from 'react';
+// import { useEffect } from 'react';
 
 interface Step5StatusUsahaProps {
     onNext: (data: { status_usaha?: string | null }) => void;
@@ -7,19 +8,26 @@ interface Step5StatusUsahaProps {
     userData: Record<string, any>;
 }
 export default function Step5UsahaStatus({ onNext, onBack, userData }: Step5StatusUsahaProps) {
-    const [processing, setProcessing] = useState(false);
-    const [selectedStatusUsaha, setSelectedStatusUsaha] = useState<'usaha_baru' | 'usaha_ongoing' | null>(null);
+    const { data, setData, processing } = useForm<{
+        status_usaha: 'usaha_baru' | 'usaha_ongoing' | null;
+    }>({
+        status_usaha: null,
+    });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (selectedStatusUsaha !== null) {
-            setProcessing(true);
-            onNext({ status_usaha: selectedStatusUsaha });
+        if (data.status_usaha !== null) {
+            onNext({ status_usaha: data.status_usaha });
         } else {
             alert('Silahkan pilih status usaha terlebih dahulu');
         }
     };
+
+    // debug umkm_status
+    // useEffect(() => {
+    //     console.log('Status usaha sekarang:', data.status_usaha);
+    // }, [data.status_usaha]);
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
@@ -60,9 +68,9 @@ export default function Step5UsahaStatus({ onNext, onBack, userData }: Step5Stat
                         <div className="space-y-4">
                             <div
                                 className={`cursor-pointer rounded-lg border p-4 ${
-                                    selectedStatusUsaha === 'usaha_baru' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
+                                    data.status_usaha === 'usaha_baru' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
                                 }`}
-                                onClick={() => setSelectedStatusUsaha('usaha_baru')}
+                                onClick={() => setData('status_usaha', 'usaha_baru')}
                             >
                                 <p className="text-lg font-semibold">Usaha Baru</p>
                                 <p className="text-sm text-gray-600">Saya baru akan memulai usaha</p>
@@ -70,9 +78,9 @@ export default function Step5UsahaStatus({ onNext, onBack, userData }: Step5Stat
 
                             <div
                                 className={`cursor-pointer rounded-lg border p-4 ${
-                                    selectedStatusUsaha === 'usaha_ongoing' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
+                                    data.status_usaha === 'usaha_ongoing' ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
                                 }`}
-                                onClick={() => setSelectedStatusUsaha('usaha_ongoing')}
+                                onClick={() => setData('status_usaha', 'usaha_ongoing')}
                             >
                                 <p className="text-lg font-semibold">Usaha Sudah Berjalan</p>
                                 <p className="text-sm text-gray-600">Saya sudah memiliki usaha yang berjalan</p>
