@@ -8,6 +8,7 @@ import { RegistrationData } from '@/types/registration';
 interface Role {
     id: number;
     role_name: string;
+    icon: string
 }
 
 interface MultiStepRegisterProps {
