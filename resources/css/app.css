@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 @plugin 'tailwindcss-animate';
 
@@ -210,6 +212,19 @@
     --sidebar-ring:
         oklch(0.556 0 0);
 } */
+
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+.font-poppins-semibold {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600
+}
+
 
 @layer base {
     * {
