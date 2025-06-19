@@ -23,6 +23,7 @@ interface Role {
     id: number;
     role_name: string;
     users_count: number;
+    icon: string
 }
 
 interface RoleListProps {
@@ -71,6 +72,7 @@ export default function RoleList({ roles }: RoleListProps) {
                                 <TableHead className='text-center'>ID</TableHead>
                                 <TableHead className='text-center'>Nama Role</TableHead>
                                 <TableHead className='text-center'>Jumlah User</TableHead>
+                                <TableHead className='text-center'>Icon</TableHead>
                                 <TableHead className='text-center'>Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -81,6 +83,19 @@ export default function RoleList({ roles }: RoleListProps) {
                                         <TableCell className='text-center'>{role.id}</TableCell>
                                         <TableCell className='text-center'>{role.role_name}</TableCell>
                                         <TableCell className='text-center'>{role.users_count}</TableCell>
+                                        <TableCell className='text-center'>
+                                            {role.icon ? (
+                                                <div className="flex justify-center items-center w-full">
+                                                    <img 
+                                                        src={`/storage/${role.icon}`} 
+                                                        alt={role.icon} 
+                                                        className='h-16 w-16 rounded object-cover'
+                                                    />
+                                                </div>
+                                            ):(
+                                                <span>-</span>
+                                            )}
+                                        </TableCell>
                                         <TableCell className='text-center'>
                                         <TooltipProvider>
                                         <div className='flex justify-center space-x-2'>

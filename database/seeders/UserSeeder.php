@@ -18,9 +18,9 @@ class UserSeeder extends Seeder
         $roles = Role::all()->keyBy('role_name');
 
         $userData = [
-            ['name' => 'Claudio Nehemia', 'email' => 'clauu@example.com', 'password' => 'password', 'role_name' => 'Admin'],
-            ['name' => 'Andi Putra', 'email' => 'andi@example.com', 'password' => 'password', 'role_name' => 'Wirausaha'],
-            ['name' => 'Glory', 'email' => 'glory@example.com', 'password' => 'password', 'role_name' => 'Investor'],
+            ['name' => 'Investor', 'email' => 'investor@example.com', 'password' => 'password', 'role_name' => 'Investor'],
+            ['name' => 'Wirausaha', 'email' => 'wirausaha@example.com', 'password' => 'password', 'role_name' => 'Wirausaha'],
+            ['name' => 'Admin', 'email' => 'admin@example.com', 'password' => 'password', 'role_name' => 'Admin'],
         ];
 
         foreach ($userData as $item) {

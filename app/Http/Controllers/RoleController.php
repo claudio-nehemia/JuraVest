@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RoleController extends Controller
 {
@@ -13,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::withCount('users')->get();
+        $roles = Role::withCount('users')->orderBy('id','asc')->get();
         return Inertia::render('admin/role/index',[
             'roles' => $roles,
         ]);
@@ -34,9 +35,15 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
-            'role_name' => 'required|string|max:255'
+            'role_name' => 'required|string|max:255',
+            'icon' => 'nullable|image|mimes:png,jpg,jpeg'
         ]);
+
+        if($request->hasFile('icon')) {
+            $validated['icon'] = $request->file('icon')->store('role_icons', 'public');
+        }
 
         Role::create($validated);
 
@@ -56,9 +63,20 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        // dd($request->all());
         $validated = $request->validate([
-            'role_name' => 'required|string|max:255'
+            'role_name' => 'required|string|max:255',
+            'icon' => 'nullable|image'
         ]);
+
+        if($request->hasFile('icon')) {
+            if($role->icon) {
+                Storage::disk('public')->delete($role->icon);
+            } 
+            $validated['icon'] = $request->file('icon')->store('role_icons', 'public');
+        } else {
+            unset($validated['icon']);
+        }
 
         $role->update($validated);
 

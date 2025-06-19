@@ -8,7 +8,8 @@ use MongoDB\Laravel\Eloquent\SoftDeletes;
 class Role extends Model
 {
     protected $fillable = [
-        'role_name'
+        'role_name',
+        'icon'
     ];
 
     public function users() {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\DataDiriController;
 use App\Http\Controllers\JenisUsahaController;
 use App\Http\Controllers\PekerjaanController;
@@ -12,24 +13,24 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('front/dashboard');
 })->name('home');
 
-Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->name('register1');
-Route::get('setPassword', function(){
-    return Inertia::render('auth/register/step2SetPassword');
-})->name('register2');
-Route::get('setRole', function(){
-    return Inertia::render('auth/register/step3SetRole');
-})->name('register3');
-Route::get('setStatusUsaha', function(){
-    return Inertia::render('auth/register/step5SetStatusUsaha');
-})->name('register5');
+
+// Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->name('register1');
+// Route::get('setPassword', function(){
+//     return Inertia::render('auth/register/step2SetPassword');
+// })->name('register2');
+// Route::get('setRole', function(){
+//     return Inertia::render('auth/register/step3SetRole');
+// })->name('register3');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    // Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
 
     Route::prefix('admin')->group(function(){
         Route::resource('role', RoleController::class)->except(['show']);

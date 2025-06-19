@@ -1,40 +1,80 @@
-import React, { useState } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import React, { useEffect } from 'react';
+import { Head, Link } from '@inertiajs/react';
 
 interface Step1BasicProps {
     onNext: (data: { nama: string; email: string; no_telp: string }) => void;
+    initialData?: { nama: string; email: string; no_telp: string };
+    processing?: boolean;
+    errors?: any;
 }
 
-export default function Step1BasicInfo({ onNext } : Step1BasicProps) {
-    const { data, setData, errors, processing } = useForm({
-        nama: '',
-        email: '',
-        no_telp: '',
+export default function Step1BasicInfo({ onNext, initialData, processing = false, errors = {} }: Step1BasicProps) {
+    const [data, setData] = React.useState({
+        nama: initialData?.nama || '',
+        email: initialData?.email || '',
+        no_telp: initialData?.no_telp || '',
     });
+
+    const [localErrors, setLocalErrors] = React.useState<any>({});
+
+    // Update data when initialData changes
+    useEffect(() => {
+        if (initialData) {
+            setData({
+                nama: initialData.nama,
+                email: initialData.email,
+                no_telp: initialData.no_telp,
+            });
+        }
+    }, [initialData]);
+
+    // Update local errors when server errors come in
+    useEffect(() => {
+        setLocalErrors(errors);
+    }, [errors]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setLocalErrors({});
         
-        // Validasi sederhana
-        if (!data.nama || !data.email || !data.no_telp) {
-            alert('Semua field harus diisi!');
-            return;
+        // Basic client-side validation
+        const newErrors: Record<string, string> = {};
+        
+        if (!data.nama.trim()) {
+            newErrors.nama = 'Nama harus diisi';
         }
         
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(data.email)) {
-            alert('Format email tidak valid!');
-            return;
+        if (!data.email.trim()) {
+            newErrors.email = 'Email harus diisi';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+            newErrors.email = 'Format email tidak valid';
         }
         
-        // Phone validation
-        if (data.no_telp.length < 10) {
-            alert('Nomor telepon minimal 10 digit!');
+        if (!data.no_telp.trim()) {
+            newErrors.no_telp = 'Nomor telepon harus diisi';
+        } else if (data.no_telp.length < 10) {
+            newErrors.no_telp = 'Nomor telepon minimal 10 digit';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setLocalErrors(newErrors);
             return;
         }
-        
+
+        // Call parent handler
         onNext(data);
+    };
+
+    const handleInputChange = (field: keyof typeof data, value: string) => {
+        setData(prev => ({ ...prev, [field]: value }));
+        // Clear error for this field when user starts typing
+        if (localErrors[field]) {
+            setLocalErrors((prev: any) => {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            });
+        }
     };
 
     return (
@@ -45,11 +85,11 @@ export default function Step1BasicInfo({ onNext } : Step1BasicProps) {
                 {/* Progress Bar */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-blue-600">Langkah 1 dari 4</span>
-                        <span className="text-sm text-gray-500">25%</span>
+                        <span className="text-sm font-medium text-blue-600">Langkah 1 dari 3</span>
+                        <span className="text-sm text-gray-500">Informasi Dasar</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-600 h-2 rounded-full" style={{width: '25%'}}></div>
+                        <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{width: '33%'}}></div>
                     </div>
                 </div>
 
@@ -68,67 +108,112 @@ export default function Step1BasicInfo({ onNext } : Step1BasicProps) {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <label htmlFor="nama" className="block text-sm font-medium text-gray-700 mb-2">
-                                Nama Lengkap
+                                Nama Lengkap <span className="text-red-500">*</span>
                             </label>
                             <input
                                 id="nama"
                                 type="text"
                                 value={data.nama}
-                                onChange={(e) => setData('nama', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                onChange={(e) => handleInputChange('nama', e.target.value)}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                                    localErrors.nama ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                                }`}
                                 placeholder="Masukkan nama lengkap Anda"
-                                required
+                                disabled={processing}
+                                autoComplete="name"
                             />
-                            {errors.nama && <p className="mt-1 text-sm text-red-600">{errors.nama}</p>}
+                            {localErrors.nama && (
+                                <p className="mt-2 text-sm text-red-600 flex items-center">
+                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {localErrors.nama}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                Email
+                                Email <span className="text-red-500">*</span>
                             </label>
                             <input
                                 id="email"
                                 type="email"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                                    localErrors.email ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                                }`}
                                 placeholder="nama@email.com"
-                                required
+                                disabled={processing}
+                                autoComplete="email"
                             />
-                            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                            {localErrors.email && (
+                                <p className="mt-2 text-sm text-red-600 flex items-center">
+                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {localErrors.email}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <label htmlFor="no_telp" className="block text-sm font-medium text-gray-700 mb-2">
-                                Nomor Telepon
+                                Nomor Telepon <span className="text-red-500">*</span>
                             </label>
                             <input
                                 id="no_telp"
                                 type="tel"
                                 value={data.no_telp}
-                                onChange={(e) => setData('no_telp', e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                onChange={(e) => handleInputChange('no_telp', e.target.value)}
+                                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                                    localErrors.no_telp ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+                                }`}
                                 placeholder="08123456789"
-                                required
+                                disabled={processing}
+                                autoComplete="tel"
                             />
-                            {errors.no_telp && <p className="mt-1 text-sm text-red-600">{errors.no_telp}</p>}
+                            {localErrors.no_telp && (
+                                <p className="mt-2 text-sm text-red-600 flex items-center">
+                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    {localErrors.no_telp}
+                                </p>
+                            )}
                         </div>
 
                         <button
                             type="submit"
-                            disabled={processing}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={processing || !data.nama.trim() || !data.email.trim() || !data.no_telp.trim()}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                         >
-                            {processing ? 'Memproses...' : 'Lanjutkan'}
+                            {processing ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Memproses...
+                                </>
+                            ) : (
+                                <>
+                                    Lanjutkan
+                                    <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </>
+                            )}
                         </button>
                     </form>
 
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Sudah punya akun?{' '}
-                            <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+                            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
                                 Masuk di sini
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
