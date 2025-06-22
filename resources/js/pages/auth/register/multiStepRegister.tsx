@@ -1,14 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { RegistrationData } from '@/types/registration';
+import { UsahaBaru, UsahaOngoing } from '@/types/usaha-baru-ongoing';
 import { Head, router, usePage } from '@inertiajs/react';
+import { useCallback, useEffect, useState } from 'react';
 import Step1BasicInfo from './step1BasicInfo';
 import Step2Password from './step2SetPassword';
-import Step3RoleSelection from './step3SetRole';
-import { RegistrationData } from '@/types/registration';
+import Step3DataDiri from './step3FormDataDiri';
+import Step4RoleSelection from './step4SetRole';
+import Step5StatusUsaha from './step5SetStatusUsaha';
+import Step6aFormUsahaBaru from './step6aFormUsahaBaru';
+import Step6bFormUsahaOngoing from './step6bFormUsahaOngoing';
 
 interface Role {
     id: number;
     role_name: string;
-    icon: string
+    icon: string;
 }
 
 interface MultiStepRegisterProps {
@@ -16,60 +21,38 @@ interface MultiStepRegisterProps {
     initialStep?: number;
     registrationData?: RegistrationData;
 }
+// const { props } = usePage<any>();
+// const jenisUsahaOptions = props.jenisUsahaOptions;
+// const targetPasarOptions = props.targetPasarOptions;
 
-export default function MultiStepRegister({ 
-    roles = [], 
-    initialStep = 1, 
-    registrationData 
-}: MultiStepRegisterProps) {
-    const { props } = usePage();
-    const [currentStep, setCurrentStep] = useState(initialStep);
-    
-    // Initialize userData with proper default structure
+export default function MultiStepRegister({ roles = [], initialStep = 1, registrationData }: MultiStepRegisterProps) {
+    const { props } = usePage<any>();
+    const jenisUsahaOptions = props.jenisUsahaOptions;
+    const targetPasarOptions = props.targetPasarOptions;
+    const pekerjaanOptions = props.pekerjaanOptions;
+
     const [userData, setUserData] = useState<RegistrationData>(() => {
-        if (registrationData && typeof registrationData === 'object') {
-            return registrationData;
-        }
-        return {};
+        return registrationData ?? {};
     });
-    
+
+    const [currentStep, setCurrentStep] = useState<number>(() => {
+        if (registrationData?.step5?.completed) return 6;
+        if (registrationData?.step4?.completed) return 5;
+        if (registrationData?.step3?.completed) return 4;
+        if (registrationData?.step2?.completed) return 3;
+        if (registrationData?.step1) return 2;
+        return 1;
+    });
+
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<any>({});
-
-    // Initialize data from props if available - dengan perbaikan logika
-    useEffect(() => {
-        console.log('Registration data:', registrationData);
-        if (registrationData && typeof registrationData === 'object') {
-            setUserData(registrationData);
-            
-            // Perbaikan logika penentuan step
-            // Jika step2 completed, maka ke step 3
-            if (registrationData.step2?.completed) {
-                console.log('Step 2 completed, moving to step 3');
-                setCurrentStep(3);
-            } 
-            // Jika hanya step1 yang ada, maka ke step 2
-            else if (registrationData.step1) {
-                console.log('Step 1 completed, moving to step 2');
-                setCurrentStep(2);
-            } 
-            // Jika tidak ada data, tetap di step 1
-            else {
-                console.log('No data, staying at step 1');
-                setCurrentStep(1);
-            }
-        } else {
-            // Jika tidak ada registrationData, tetap di step 1
-            setCurrentStep(1);
-        }
-    }, [registrationData]);
 
     // Use useCallback to ensure functions are stable references
     const handleStep1Next = useCallback(async (data: { nama: string; email: string; no_telp: string }) => {
         console.log('handleStep1Next called with:', data);
         setLoading(true);
         setErrors({});
-        
+
         try {
             await new Promise((resolve, reject) => {
                 router.post('/register/basic-info', data, {
@@ -77,7 +60,16 @@ export default function MultiStepRegister({
                     preserveScroll: true,
                     onSuccess: () => {
                         console.log('Step 1 success:', data);
-                        setUserData(prev => ({ ...prev, step1: data }));
+                        setUserData((prev) => ({
+                            ...prev,
+                            step1: data,
+                            step3: prev.step3
+                                ? {
+                                      ...prev.step3,
+                                      nama_lengkap: data.nama, // update nama_lengkap hanya kalau step3 sudah pernah ada
+                                  }
+                                : prev.step3,
+                        }));
                         setCurrentStep(2);
                         resolve(true);
                     },
@@ -88,7 +80,7 @@ export default function MultiStepRegister({
                     },
                     onFinish: () => {
                         setLoading(false);
-                    }
+                    },
                 });
             });
         } catch (error) {
@@ -100,25 +92,25 @@ export default function MultiStepRegister({
         console.log('handleStep2Next called with:', data);
         setLoading(true);
         setErrors({});
-        
+
         try {
             await new Promise((resolve, reject) => {
                 router.post('/register/set-password', data, {
-                    preserveState: true, 
+                    preserveState: true,
                     preserveScroll: true,
                     onSuccess: (page) => {
                         console.log('Step 2 success - page data:', page);
-                        
+
                         // Update userData dengan step2 completed
-                        setUserData(prev => ({ 
-                            ...prev, 
-                            step2: { 
+                        setUserData((prev) => ({
+                            ...prev,
+                            step2: {
                                 password: data.password,
                                 password_confirmation: data.password_confirmation,
-                                completed: true // Penting: tandai sebagai completed
-                            } 
+                                completed: true, // Penting: tandai sebagai completed
+                            },
                         }));
-                        
+
                         // Pindah ke step 3
                         setCurrentStep(3);
                         resolve(true);
@@ -130,7 +122,7 @@ export default function MultiStepRegister({
                     },
                     onFinish: () => {
                         setLoading(false);
-                    }
+                    },
                 });
             });
         } catch (error) {
@@ -138,16 +130,34 @@ export default function MultiStepRegister({
         }
     }, []);
 
-    const handleStep3Next = useCallback(async (data: { role_id: number }) => {
+    const handleStep3Next = useCallback(async (data: any) => {
         console.log('handleStep3Next called with:', data);
         setLoading(true);
         setErrors({});
-        
+
         try {
             await new Promise((resolve, reject) => {
-                router.post('/register/registration', data, {
+                router.post('/register/set-data-diri', data, {
+                    preserveState: true,
                     onSuccess: () => {
                         console.log('Step 3 success:', data);
+
+                        setUserData((prev) => ({
+                            ...prev,
+                            step3: {
+                                ...data,
+                                completed: true,
+                            },
+                            step1: {
+                                ...prev.step1,
+                                nama: data.nama_lengkap,
+                                email: prev.step1?.email ?? '',
+                                no_telp: prev.step1?.no_telp ?? '',
+                            },
+                        }));
+
+                        setCurrentStep(4);
+
                         resolve(true);
                     },
                     onError: (serverErrors) => {
@@ -157,13 +167,135 @@ export default function MultiStepRegister({
                     },
                     onFinish: () => {
                         setLoading(false);
-                    }
+                    },
                 });
             });
         } catch (error) {
             console.error('Step 3 catch error:', error);
         }
     }, []);
+
+    const handleStep4Next = useCallback(async (data: { role_id: number }) => {
+        console.log('handleStep4Next called with:', data);
+        setLoading(true);
+        setErrors({});
+
+        try {
+            await new Promise((resolve, reject) => {
+                router.post('/register/set-role', data, {
+                    preserveState: true,
+                    onSuccess: () => {
+                        console.log('Step 4 success:', data);
+
+                        setUserData((prev) => ({
+                            ...prev,
+                            step4: {
+                                role_id: data.role_id,
+                                completed: true,
+                            },
+                        }));
+
+                        setCurrentStep(5);
+
+                        resolve(true);
+                    },
+                    onError: (serverErrors) => {
+                        console.error('Step 4 errors:', serverErrors);
+                        setErrors(serverErrors);
+                        reject(serverErrors);
+                    },
+                    onFinish: () => {
+                        setLoading(false);
+                    },
+                });
+            });
+        } catch (error) {
+            console.error('Step 4 catch error:', error);
+        }
+    }, []);
+
+    const handleStep5Next = useCallback(async (data: { status_usaha: 'usaha_baru' | 'usaha_ongoing' }) => {
+        console.log('handleStep5Next called with:', data);
+        setLoading(true);
+        setErrors({});
+
+        try {
+            await new Promise((resolve, reject) => {
+                router.post('/register/set-status-usaha', data, {
+                    preserveState: true,
+                    onSuccess: () => {
+                        setUserData((prev) => {
+                            const statusBerubah = prev.step5?.status_usaha !== data.status_usaha;
+
+                            const updated = {
+                                ...prev,
+                                step5: {
+                                    status_usaha: data.status_usaha,
+                                    completed: true,
+                                },
+                            };
+
+                            if (statusBerubah) {
+                                console.log('Status usaha berubah, data step6 dihapus');
+                                delete updated.step6;
+                            }
+
+                            return updated;
+                        });
+                        setCurrentStep(6);
+                        resolve(true);
+                    },
+                    onError: (serverErrors) => {
+                        console.error('Step 5 errors:', serverErrors);
+                        setErrors(serverErrors);
+                        reject(serverErrors);
+                    },
+                    onFinish: () => setLoading(false),
+                });
+            });
+        } catch (error) {
+            console.error('Step 5 catch error:', error);
+        }
+    }, []);
+
+    const handleStep6Next = useCallback(
+        async (data: any) => {
+            console.log('handleStep6Next called with:', data);
+            setLoading(true);
+            setErrors({});
+
+            const statusUsaha = userData?.step5?.status_usaha;
+
+            const endpoint = statusUsaha === 'usaha_baru' ? '/register/store-form-usaha-baru' : '/register/store-form-usaha-ongoing';
+
+            try {
+                await new Promise((resolve, reject) => {
+                    router.post(endpoint, data, {
+                        preserveState: true,
+                        onSuccess: () => {
+                            setUserData((prev) => ({
+                                ...prev,
+                                step6: {
+                                    ...data,
+                                    completed: true,
+                                },
+                            }));
+                            resolve(true);
+                        },
+                        onError: (serverErrors) => {
+                            console.error('Step 6 errors:', serverErrors);
+                            setErrors(serverErrors);
+                            reject(serverErrors);
+                        },
+                        onFinish: () => setLoading(false),
+                    });
+                });
+            } catch (error) {
+                console.error('Step 6 error:', error);
+            }
+        },
+        [userData],
+    );
 
     const handleStep2Back = useCallback(() => {
         console.log('handleStep2Back called');
@@ -177,6 +309,24 @@ export default function MultiStepRegister({
         setErrors({});
     }, []);
 
+    const handleStep4Back = useCallback(() => {
+        console.log('handleStep4Back called');
+        setCurrentStep(3);
+        setErrors({});
+    }, []);
+
+    const handleStep5Back = useCallback(() => {
+        console.log('handleStep5Back called');
+        setCurrentStep(4);
+        setErrors({});
+    }, []);
+
+    const handleStep6Back = useCallback(() => {
+        console.log('handleStep6Back called');
+        setCurrentStep(5);
+        setErrors({});
+    }, []);
+
     // Clear registration data
     const clearRegistrationData = useCallback(() => {
         router.delete('/register/clear', {
@@ -186,7 +336,7 @@ export default function MultiStepRegister({
                 setUserData({});
                 setCurrentStep(1);
                 setErrors({});
-            }
+            },
         });
     }, []);
 
@@ -199,10 +349,16 @@ export default function MultiStepRegister({
             handleStep1Next: typeof handleStep1Next,
             handleStep2Next: typeof handleStep2Next,
             handleStep3Next: typeof handleStep3Next,
+            handleStep4Next: typeof handleStep4Next,
+            handleStep5Next: typeof handleStep5Next,
+            handleStep6Next: typeof handleStep6Next,
             handleStep2Back: typeof handleStep2Back,
-            handleStep3Back: typeof handleStep3Back
+            handleStep3Back: typeof handleStep3Back,
+            handleStep4Back: typeof handleStep4Back,
+            handleStep5Back: typeof handleStep5Back,
+            handleStep6Back: typeof handleStep6Back,
         });
-        
+
         // Additional debugging for Step 2
         if (currentStep === 2) {
             console.log('Step 2 Debug:', {
@@ -212,42 +368,107 @@ export default function MultiStepRegister({
                 onBackType: typeof handleStep2Back,
                 userData: userData,
                 processing: loading,
-                errors: errors
+                errors: errors,
             });
         }
-    }, [currentStep, handleStep1Next, handleStep2Next, handleStep3Next, handleStep2Back, handleStep3Back, userData, loading, errors, registrationData]);
+    }, [
+        currentStep,
+        handleStep1Next,
+        handleStep2Next,
+        handleStep3Next,
+        handleStep4Next,
+        handleStep5Next,
+        handleStep6Next,
+        handleStep2Back,
+        handleStep3Back,
+        handleStep4Back,
+        handleStep5Back,
+        handleStep6Back,
+        userData,
+        loading,
+        errors,
+        registrationData,
+    ]);
+
+    //DEBUG STEP 5
+    useEffect(() => {
+        console.log('✅ step5 completed:', userData?.step5?.completed);
+        console.log('✅ status usaha:', userData?.step5?.status_usaha);
+        console.log('✅ current step:', currentStep);
+        console.log('⏳ Reloaded! props.registrationData:', registrationData);
+    }, [userData, currentStep]);
+
+    //initial data step 4
+    const selectedRole = roles.find((role) => role.id === userData?.step4?.role_id);
 
     return (
         <>
             <Head title="Daftar Akun" />
-            
-            {currentStep === 1 && (
-                <Step1BasicInfo 
-                    onNext={handleStep1Next}
-                    initialData={userData?.step1}
-                    processing={loading}
-                    errors={errors}
-                />
-            )}
-            
+
+            {currentStep === 1 && <Step1BasicInfo onNext={handleStep1Next} initialData={userData?.step1} processing={loading} errors={errors} />}
+
             {currentStep === 2 && (
-                <Step2Password 
-                    onNext={handleStep2Next}
-                    onBack={handleStep2Back}
+                <Step2Password onNext={handleStep2Next} onBack={handleStep2Back} userData={userData} processing={loading} errors={errors} />
+            )}
+
+            {currentStep === 3 && (
+                <Step3DataDiri
+                    onNext={handleStep3Next}
+                    onBack={handleStep3Back}
                     userData={userData}
                     processing={loading}
                     errors={errors}
+                    pekerjaanOptions={pekerjaanOptions}
+                    initialData={userData?.step3}
                 />
             )}
-            
-            {currentStep === 3 && (
-                <Step3RoleSelection 
-                    onNext={handleStep3Next}
-                    onBack={handleStep3Back}
+
+            {currentStep === 4 && (
+                <Step4RoleSelection
+                    onNext={handleStep4Next}
+                    onBack={handleStep4Back}
                     userData={userData}
                     roles={roles}
                     processing={loading}
                     errors={errors}
+                    initialData={selectedRole}
+                />
+            )}
+
+            {currentStep === 5 && (
+                <Step5StatusUsaha
+                    onNext={handleStep5Next}
+                    onBack={handleStep5Back}
+                    userData={userData}
+                    processing={loading}
+                    errors={errors}
+                    initialData={userData?.step5}
+                />
+            )}
+
+            {currentStep === 6 && userData?.step5?.status_usaha === 'usaha_baru' && (
+                <Step6aFormUsahaBaru
+                    onNext={handleStep6Next}
+                    onBack={handleStep6Back}
+                    userData={userData}
+                    processing={loading}
+                    errors={errors}
+                    jenisUsahaOptions={jenisUsahaOptions}
+                    targetPasarOptions={targetPasarOptions}
+                    initialData={userData?.step5?.status_usaha === 'usaha_baru' ? (userData.step6 as UsahaBaru) : undefined}
+                />
+            )}
+
+            {currentStep === 6 && userData?.step5?.status_usaha === 'usaha_ongoing' && (
+                <Step6bFormUsahaOngoing
+                    onNext={handleStep6Next}
+                    onBack={handleStep6Back}
+                    userData={userData}
+                    processing={loading}
+                    errors={errors}
+                    jenisUsahaOptions={jenisUsahaOptions}
+                    targetPasarOptions={targetPasarOptions}
+                    initialData={userData?.step5?.status_usaha === 'usaha_ongoing' ? (userData.step6 as UsahaOngoing) : undefined}
                 />
             )}
 
