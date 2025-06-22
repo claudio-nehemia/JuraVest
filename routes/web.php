@@ -39,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('home');
     Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
 
+    // Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+
     Route::prefix('admin')->group(function(){
         Route::resource('role', RoleController::class)->except(['show']);
         Route::resource('user', UserController::class)->except(['show']);

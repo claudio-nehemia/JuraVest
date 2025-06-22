@@ -18,26 +18,39 @@ Route::middleware('guest')->group(function () {
         
         // Halaman individual steps (opsional, jika ingin diakses langsung)
         Route::get('basic-info', [RegisteredUserController::class, 'showBasicInfo']) 
-            ->name('register.basicInfo');
+            ->name('register.show-basicInfo');
         Route::get('set-password', [RegisteredUserController::class, 'showPassword'])
-            ->name('register.password');
-        Route::get('set-role', [RegisteredUserController::class, 'setRole'])
-            ->name('register.role');
+            ->name('register.show-password');
+        Route::get('set-data-diri', [RegisteredUserController::class, 'showDataDiri'])
+            ->name('register.show-dataDiri');
+        Route::get('set-role', [RegisteredUserController::class, 'showRole'])
+            ->name('register.show-role');
+        Route::get('set-status-usaha', [RegisteredUserController::class, 'showStatusUsaha'])
+            ->name('register.show-statusUsaha');
+        Route::get('show-form-usaha-baru', [RegisteredUserController::class, 'showFormStatusUsahaBaru'])
+            ->name('register.show-formStatusUsahaBaru');
+        Route::get('show-form-usaha-ongoing', [RegisteredUserController::class, 'showFormStatusUsahaOngoing'])
+            ->name('register.show-formStatusUsahaOngoing');    
         
         // API endpoints untuk multi-step register
         Route::post('basic-info', [RegisteredUserController::class, 'storeBasicInfo']) 
             ->name('register.store-basicInfo');
-        
         Route::post('set-password', [RegisteredUserController::class, 'storePassword'])
             ->name('register.store-password');
-
-        Route::post('registration', [RegisteredUserController::class, 'store'])
-            ->name('register.store');
+        Route::post('set-data-diri', [RegisteredUserController::class, 'storeDataDiri'])
+            ->name('register.store-dataDiri');
+        Route::post('set-role', [RegisteredUserController::class, 'storeRole'])
+            ->name('register.store-role');
+        Route::post('set-status-usaha', [RegisteredUserController::class, 'storeStatusUsaha'])
+            ->name('register.store-statusUsaha');
+        Route::post('store-form-usaha-baru', [RegisteredUserController::class, 'storeFormStatusUsahaBaru'])
+            ->name('register.store-formStatusUsahaBaru');
+        Route::post('store-form-usaha-ongoing', [RegisteredUserController::class, 'storeFormStatusUsahaOngoing'])
+            ->name('register.store-formStatusUsahaOngoing');
 
         // Endpoint untuk mengambil data registrasi dari session
         Route::get('data', [RegisteredUserController::class, 'getRegistrationData'])
-            ->name('register.get-data');
-            
+            ->name('register.get-data'); 
         Route::delete('clear', [RegisteredUserController::class, 'clearRegistrationData'])
             ->name('register.clear-data');
     });
