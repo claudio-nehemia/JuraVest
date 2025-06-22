@@ -32,7 +32,7 @@ const TargetPasarForm = () => {
 
     const isEditing = mode === 'edit';
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         ...(isEditing ? { _method: 'put' } : {}),
         target_pasar: targetPasar?.target_pasar || '',
         icon: null as File | null,

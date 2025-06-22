@@ -7,6 +7,7 @@ use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
@@ -43,8 +44,14 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email',
             'password' => ['required','confirmed', Password::default()],
-            'role_id' => 'required|integer|exists:roles,id'
+            'role_id' => 'required|integer|exists:roles,id',
+            'no_telp' => 'nullable|string|max:15',
+            'foto_profil' => 'nullable|image'
         ]);
+
+        if($request->hasFile('foto_profil')) {
+            $validated['foto_profil'] = $request->file('foto_profil')->store('user_profiles','public');
+        }
 
         $validated['password'] = Hash::make($validated['password']);
 
@@ -77,13 +84,24 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $user->id,
             'password' => ['nullable', 'confirmed', Password::default()],
-            'role_id' => 'required|integer|exists:roles,id'
+            'role_id' => 'required|integer|exists:roles,id',
+            'no_telp' => 'nullable|string|max:15',
+            'foto_profil' => 'nullable|image'
         ]);
 
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
             unset($validated['password']);
+        }
+
+        if($request->hasFile('foto_profil')) {
+            if($user->foto_profil) {
+                Storage::disk('public')->delete($user->foto_profil);
+            }
+            $validated['foto_profil'] = $request->file('foto_profil')->store('user_profiles', 'public');
+        } else {
+            unset($validated['foto_profil']);
         }
 
         $user->update($validated);

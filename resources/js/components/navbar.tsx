@@ -1,10 +1,32 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { usePage, router } from '@inertiajs/react';
+import { Link } from 'lucide-react';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  foto_profil: string
+}
+
+interface PageProps {
+  auth: {
+    user: User | null
+  };
+  [key: string]:any
+}
 
 export default function Navbar() {
+    const {auth} = usePage<PageProps>().props;
+    const isLoggedIn = auth && auth.user !== null;
+    const handleRegister = () => router.visit(route('register'));
+    const handleLogin = () => router.visit(route('login'));
+    const handleProfile = () => router.visit(route('user.profile'));
+
   return (
-    <header className="flex items-center justify-between mb-16">
-      <div className="flex items-center gap-2 scale-125">
+    <header className="flex items-center justify-between bg-white p-5 shadow">
+      <div className="flex items-center gap-2 scale-125 my-3">
         <img src="/jura-logo.jpg" alt="Logo" className="w-13 h-13 rounded-lg ml-10" />
         <h1 className="font-montserrat text-3xl font-bold ">JURAVEST</h1> 
         {/* monserrat bold*/}
@@ -16,16 +38,28 @@ export default function Navbar() {
         <a href="#" className="hover:underline">Tentang Kami</a>
       </nav>
       <div className="flex gap-4 font-poppins">
-        <a href="/login">
-          <Button variant="ghost" className="text-orange-500 shadow-xl rounded-3xl">
+        {isLoggedIn && auth.user? (
+          <Button 
+            className='bg-orange-400 p-5 pr-3 shadow-[0_1px_4px_rgba(0,0,0,0.5)] text-white hover:bg-orange-500 rounded-3xl'
+            onClick={handleProfile}>
+            <span>{auth.user.email}</span>
+            <img 
+              src={`/storage/${auth.user.foto_profil}`}
+              className='h-7 w-7 rounded-full shadow-[0_0.5px_4px_rgba(0,0,0,0.5)]'
+            />
+            </Button>
+          ) : (
+
+          <div>
+          <Button variant="ghost" className="text-orange-500 shadow rounded-3xl mx-2" onClick={handleLogin}>
             Login
           </Button>
-        </a>
-        <a href="/register">
-          <Button className="bg-orange-400 shadow-xl text-white hover:bg-orange-500 rounded-3xl">
+          <Button className="bg-orange-400 shadow text-white hover:bg-orange-500 rounded-3xl" onClick={handleRegister}>
             Register
           </Button>
-        </a>
+          </div>
+        )}
+        
 
       </div>
     </header>

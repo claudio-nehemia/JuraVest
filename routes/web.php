@@ -13,8 +13,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('front/dashboard');
-})->name('home');
+    return Inertia::render('front/welcome');
+})->name('welcome');
+
+Route::get('profile', function() {
+    return Inertia::render('front/profile');
+})->name('user.profile');
 
 // Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->name('register1');
 // Route::get('setPassword', function(){
@@ -25,11 +29,15 @@ Route::get('/', function () {
 // })->name('register3');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    // Route::get('dashboard', function () {
+    //     return Inertia::render('dashboard');
+    // })->name('dashboard');
 
-    // Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+
+    Route::get('home', function() {
+        return Inertia::render('front/dashboard');
+    })->name('home');
+    Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
 
     Route::prefix('admin')->group(function(){
         Route::resource('role', RoleController::class)->except(['show']);

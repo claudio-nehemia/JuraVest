@@ -10,10 +10,12 @@ type User = {
     id: number;
     name: string;
     email: string;
+    no_telp: string;
     role: {
         id: number;
         role_name: string;
     };
+    foto_profil: string
 };
 
 type PaginationLink = {
@@ -73,7 +75,9 @@ export default function User() {
                                     <TableHead className="text-center">ID</TableHead>
                                     <TableHead className="text-center">Nama</TableHead>
                                     <TableHead className="text-center">Email</TableHead>
+                                    <TableHead className='text-center'>No Telp</TableHead>
                                     <TableHead className="text-center">Role</TableHead>
+                                    <TableHead className='text-center'>Foto Profil</TableHead>
                                     <TableHead className="text-center">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -83,7 +87,20 @@ export default function User() {
                                         <TableCell className="text-center">{user.id}</TableCell>
                                         <TableCell className="text-center">{user.name}</TableCell>
                                         <TableCell className="text-center">{user.email}</TableCell>
+                                        <TableCell className="text-center">{user.no_telp}</TableCell>
                                         <TableCell className="text-center">{user.role?.role_name || 'None'}</TableCell>
+                                        <TableCell className='text-center'>
+                                            {user.foto_profil ? (
+                                                <div className="flex justify-center items-center w-full">
+                                                    <img 
+                                                        src={`/storage/${user.foto_profil}`} 
+                                                        alt={user.name} 
+                                                        className='h-16 w-16 rounded-full object-cover'
+                                                    />
+                                                </div>
+                                            ):(
+                                                <span>-</span>
+                                            )}</TableCell>
                                         <TableCell className="text-center">
                                             <TooltipProvider>
                                                 <div className="flex justify-center space-x-2">

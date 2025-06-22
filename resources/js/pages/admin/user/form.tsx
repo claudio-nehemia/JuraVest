@@ -19,6 +19,9 @@ interface User {
     name: string;
     email: string;
     role_id: number;
+    no_telp: string;
+    foto_profil: string | null;
+    foto_profil_url: string | null
 }
 
 interface Props {
@@ -33,19 +36,22 @@ const UserForm = () => {
     
     const isEditing = mode === 'edit';
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        ...(isEditing ? { _method: 'put' } : {}),
         name: user?.name || '',
         email: user?.email || '',
         role_id: user?.role_id || '',
         password: '',
         password_confirmation: '',
+        foto_profil: null as File | null,
+        no_telp: user?.no_telp || ''
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         
         if (isEditing && user) {
-            put(`/admin/user/${user.id}`, {
+            post(`/admin/user/${user.id}`, {
                 preserveScroll: true,
             });
         } else {
@@ -100,6 +106,43 @@ const UserForm = () => {
                                         {errors.email && <InputError message={errors.email} />}
                                     </div>
                                 </div>
+                                {/* Role & No Telp side-by-side */}
+                                <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+                                    {/* Role */}
+                                    <div className="flex flex-col space-y-0.5 mb-2">
+                                        <Label>Role</Label>
+                                        <select
+                                            value={data.role_id}
+                                            onChange={(e) => setData('role_id', isEditing ? parseInt(e.target.value) : e.target.value)}
+                                            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                                        >
+                                            <option value="">Pilih Role</option>
+                                            {roles.map((role) => (
+                                                <option key={role.id} value={role.id}>
+                                                    {role.role_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="min-h-[1rem]">
+                                            {errors.role_id && <InputError message={errors.role_id} />}
+                                        </div>
+                                    </div>
+
+                                    {/* No Telp */}
+                                    <div className="flex flex-col space-y-0.5 mb-2">
+                                        <Label>No. Telepon</Label>
+                                        <Input
+                                            type="text"
+                                            value={data.no_telp}
+                                            onChange={(e) => setData('no_telp', e.target.value)}
+                                            placeholder="08xxxxxxxxxx"
+                                        />
+                                        <div className="min-h-[1rem]">
+                                            {errors.no_telp && <InputError message={errors.no_telp} />}
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 {/* Password */}
                                 <div className="flex flex-col space-y-0.5">
@@ -133,23 +176,19 @@ const UserForm = () => {
                                     </div>
                                 </div>
 
-                                {/* Role */}
-                                <div className="col-span-2 flex flex-col space-y-0.5 mb-2">
-                                    <Label>Role</Label>
-                                    <select
-                                        value={data.role_id}
-                                        onChange={(e) => setData('role_id', isEditing ? parseInt(e.target.value) : e.target.value)}
-                                        className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                                    >
-                                        <option value="">Pilih Role</option>
-                                        {roles.map((role) => (
-                                            <option key={role.id} value={role.id}>
-                                                {role.role_name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                {/* Foto_Profil */}
+                                <div className="col-span-2 space-y-0.5">
+                                <Label>Foto Profil</Label>
+                                    {isEditing && user?.foto_profil_url && (
+                                    <img src={user.foto_profil_url} alt={user.name} className="mb-2 h-32 w-32 rounded object-cover border" />
+                                        )}
+                                        <Input 
+                                            type="file" 
+                                            accept="image/*"
+                                            onChange={(e) => setData('foto_profil', e.target.files?.[0] || null)} 
+                                        />
                                     <div className="min-h-[1rem]">
-                                        {errors.role_id && <InputError message={errors.role_id} />}
+                                        {errors.foto_profil && <InputError message={errors.foto_profil} />}
                                     </div>
                                 </div>
                             </div>
@@ -173,5 +212,6 @@ const UserForm = () => {
         </AppLayout>
     );
 };
+
 
 export default UserForm;
