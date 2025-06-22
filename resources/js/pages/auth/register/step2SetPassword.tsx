@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Head, router } from '@inertiajs/react';
 import { RegistrationData } from '@/types/registration';
+import { Head, router } from '@inertiajs/react';
+import React, { useEffect, useState } from 'react';
 
 interface Step2PasswordProps {
     onNext?: (data: { password: string; password_confirmation: string }) => void;
@@ -10,17 +10,11 @@ interface Step2PasswordProps {
     errors?: any;
 }
 
-export default function Step2Password({ 
-    onNext, 
-    onBack, 
-    userData = {} as RegistrationData, 
-    processing = false, 
-    errors = {} 
-}: Step2PasswordProps) {
+export default function Step2Password({ onNext, onBack, userData = {} as RegistrationData, processing = false, errors = {} }: Step2PasswordProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [localProcessing, setLocalProcessing] = useState(false);
-    
+
     // Menggunakan state lokal yang konsisten dengan parent
     const [data, setData] = useState({
         password: '',
@@ -38,7 +32,7 @@ export default function Step2Password({
             onBackType: typeof onBack,
             userData: userData,
             processing: processing,
-            errors: errors
+            errors: errors,
         });
     }, [onNext, onBack, userData, processing, errors]);
 
@@ -55,7 +49,7 @@ export default function Step2Password({
             onNext: onNext,
             onNextType: typeof onNext,
             onNextDefined: onNext !== undefined,
-            onNextIsFunction: typeof onNext === 'function'
+            onNextIsFunction: typeof onNext === 'function',
         });
 
         // Validasi sisi klien
@@ -86,7 +80,7 @@ export default function Step2Password({
             // Fallback: handle langsung dengan router
             console.log('Parent onNext not available, handling directly with router');
             setLocalProcessing(true);
-            
+
             try {
                 await new Promise<void>((resolve, reject) => {
                     router.post('/register/set-password', data, {
@@ -105,20 +99,20 @@ export default function Step2Password({
                         },
                         onFinish: () => {
                             setLocalProcessing(false);
-                        }
+                        },
                     });
                 });
             } catch (error) {
                 console.error('Error during password submission:', error);
-                setLocalErrors({ 
-                    general: 'Terjadi kesalahan saat menyimpan password. Silakan coba lagi.' 
+                setLocalErrors({
+                    general: 'Terjadi kesalahan saat menyimpan password. Silakan coba lagi.',
                 });
             }
         }
     };
 
     const handleInputChange = (field: keyof typeof data, value: string) => {
-        setData(prev => ({ ...prev, [field]: value }));
+        setData((prev) => ({ ...prev, [field]: value }));
         // Clear error untuk field ini ketika user mulai mengetik
         if (localErrors[field]) {
             setLocalErrors((prev: any) => {
@@ -134,7 +128,7 @@ export default function Step2Password({
             onBack: onBack,
             onBackType: typeof onBack,
             onBackDefined: onBack !== undefined,
-            onBackIsFunction: typeof onBack === 'function'
+            onBackIsFunction: typeof onBack === 'function',
         });
 
         if (onBack && typeof onBack === 'function') {
@@ -181,35 +175,40 @@ export default function Step2Password({
     const isProcessing = processing || localProcessing;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4">
             <Head title="Daftar - Buat Password" />
-            
+
             <div className="w-full max-w-md">
                 {/* Progress Bar */}
                 <div className="mb-8">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                         <span className="text-sm font-medium text-blue-600">Langkah 2 dari 3</span>
                         <span className="text-sm text-gray-500">Buat Password</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-600 h-2 rounded-full transition-all duration-300" style={{width: '66%'}}></div>
+                    <div className="h-2 w-full rounded-full bg-gray-200">
+                        <div className="h-2 rounded-full bg-blue-600 transition-all duration-300" style={{ width: '66%' }}></div>
                     </div>
                 </div>
 
                 {/* Form Card */}
-                <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                    <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl">
+                    <div className="mb-8 text-center">
+                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                            <svg className="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                />
                             </svg>
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Keamanan Akun</h2>
+                        <h2 className="mb-2 text-2xl font-bold text-gray-900">Keamanan Akun</h2>
                         <p className="text-gray-600">Buat password yang kuat untuk melindungi akun Anda</p>
-                        
+
                         {/* Tampilkan info user dari step 1 - dengan pengecekan yang aman */}
                         {userData && userData.step1 && userData.step1.nama && userData.step1.email && (
-                            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <div className="mt-4 rounded-lg bg-blue-50 p-3">
                                 <p className="text-sm text-blue-800">
                                     <strong>{userData.step1.nama}</strong> • {userData.step1.email}
                                 </p>
@@ -219,10 +218,14 @@ export default function Step2Password({
 
                     {/* Error umum jika ada masalah sistem */}
                     {localErrors.general && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-sm text-red-600 flex items-center">
-                                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                            <p className="flex items-center text-sm text-red-600">
+                                <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                        clipRule="evenodd"
+                                    />
                                 </svg>
                                 {localErrors.general}
                             </p>
@@ -231,16 +234,16 @@ export default function Step2Password({
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700">
                                 Password <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
                                 <input
                                     id="password"
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword ? 'text' : 'password'}
                                     value={data.password}
                                     onChange={(e) => handleInputChange('password', e.target.value)}
-                                    className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                                    className={`w-full rounded-lg border px-4 py-3 pr-12 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
                                         localErrors.password ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
                                     }`}
                                     placeholder="Minimal 8 karakter"
@@ -253,54 +256,78 @@ export default function Step2Password({
                                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                                     tabIndex={-1}
                                 >
-                                    <svg className="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         {showPassword ? (
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                                            />
                                         ) : (
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
                                         )}
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             {/* Indikator Kekuatan Password */}
                             {data.password && (
                                 <div className="mt-3">
                                     <div className="flex items-center space-x-2">
-                                        <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                            <div 
+                                        <div className="h-2 flex-1 rounded-full bg-gray-200">
+                                            <div
                                                 className={`h-2 rounded-full transition-all duration-300 ${getStrengthColor()}`}
-                                                style={{width: `${passwordStrength}%`}}
+                                                style={{ width: `${passwordStrength}%` }}
                                             ></div>
                                         </div>
-                                        <span className={`text-xs font-medium ${getStrengthTextColor()}`}>
-                                            {getStrengthText()}
-                                        </span>
+                                        <span className={`text-xs font-medium ${getStrengthTextColor()}`}>{getStrengthText()}</span>
                                     </div>
                                     <div className="mt-2 text-xs text-gray-600">
                                         <p>Password harus mengandung:</p>
                                         <ul className="mt-1 space-y-1">
                                             <li className={`flex items-center ${data.password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>
-                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
                                                 </svg>
                                                 Minimal 8 karakter
                                             </li>
                                             <li className={`flex items-center ${/[a-z]/.test(data.password) ? 'text-green-600' : 'text-gray-400'}`}>
-                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
                                                 </svg>
                                                 Huruf kecil
                                             </li>
                                             <li className={`flex items-center ${/[A-Z]/.test(data.password) ? 'text-green-600' : 'text-gray-400'}`}>
-                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
                                                 </svg>
                                                 Huruf besar
                                             </li>
                                             <li className={`flex items-center ${/[0-9]/.test(data.password) ? 'text-green-600' : 'text-gray-400'}`}>
-                                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                <svg className="mr-1 h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path
+                                                        fillRule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clipRule="evenodd"
+                                                    />
                                                 </svg>
                                                 Angka
                                             </li>
@@ -308,11 +335,15 @@ export default function Step2Password({
                                     </div>
                                 </div>
                             )}
-                            
+
                             {localErrors.password && (
-                                <p className="mt-2 text-sm text-red-600 flex items-center">
-                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                <p className="mt-2 flex items-center text-sm text-red-600">
+                                    <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clipRule="evenodd"
+                                        />
                                     </svg>
                                     {localErrors.password}
                                 </p>
@@ -320,16 +351,16 @@ export default function Step2Password({
                         </div>
 
                         <div>
-                            <label htmlFor="password_confirmation" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="password_confirmation" className="mb-2 block text-sm font-medium text-gray-700">
                                 Konfirmasi Password <span className="text-red-500">*</span>
                             </label>
                             <div className="relative">
                                 <input
                                     id="password_confirmation"
-                                    type={showConfirmPassword ? "text" : "password"}
+                                    type={showConfirmPassword ? 'text' : 'password'}
                                     value={data.password_confirmation}
                                     onChange={(e) => handleInputChange('password_confirmation', e.target.value)}
-                                    className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                                    className={`w-full rounded-lg border px-4 py-3 pr-12 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
                                         localErrors.password_confirmation ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
                                     }`}
                                     placeholder="Ulangi password Anda"
@@ -342,55 +373,83 @@ export default function Step2Password({
                                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                                     tabIndex={-1}
                                 >
-                                    <svg className="w-5 h-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         {showConfirmPassword ? (
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                                            />
                                         ) : (
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                            />
                                         )}
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             {/* Indikator Kecocokan Password */}
                             {data.password_confirmation && (
                                 <div className="mt-2">
                                     {data.password === data.password_confirmation ? (
-                                        <p className="text-sm text-green-600 flex items-center">
-                                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        <p className="flex items-center text-sm text-green-600">
+                                            <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                    clipRule="evenodd"
+                                                />
                                             </svg>
                                             Password cocok
                                         </p>
                                     ) : (
-                                        <p className="text-sm text-red-600 flex items-center">
-                                            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                        <p className="flex items-center text-sm text-red-600">
+                                            <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    clipRule="evenodd"
+                                                />
                                             </svg>
                                             Password tidak cocok
                                         </p>
                                     )}
                                 </div>
                             )}
-                            
+
                             {localErrors.password_confirmation && (
-                                <p className="mt-2 text-sm text-red-600 flex items-center">
-                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                <p className="mt-2 flex items-center text-sm text-red-600">
+                                    <svg className="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            fillRule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clipRule="evenodd"
+                                        />
                                     </svg>
                                     {localErrors.password_confirmation}
                                 </p>
                             )}
                         </div>
 
-                        <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                        {/* Action Buttons */}
+                        <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                             <button
                                 type="button"
                                 onClick={handleBackClick}
                                 disabled={isProcessing}
-                                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                                className="group flex flex-1 items-center justify-center rounded-lg bg-gray-100 px-4 py-3 font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-200 hover:shadow-md focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                <svg className="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg
+                                    className="mr-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                                 </svg>
                                 Kembali
@@ -398,20 +457,34 @@ export default function Step2Password({
                             <button
                                 type="submit"
                                 disabled={isProcessing || !data.password.trim() || !data.password_confirmation.trim()}
-                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                className="group flex flex-1 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 font-semibold text-white shadow-md transition-all duration-200 hover:scale-[1.02] hover:from-blue-700 hover:to-blue-800 hover:shadow-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                             >
                                 {isProcessing ? (
                                     <>
-                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <svg
+                                            className="mr-3 -ml-1 h-5 w-5 animate-spin text-white"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                        >
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            <path
+                                                className="opacity-75"
+                                                fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                            ></path>
                                         </svg>
                                         Memproses...
                                     </>
                                 ) : (
                                     <>
                                         Lanjutkan
-                                        <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg
+                                            className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     </>
@@ -421,14 +494,22 @@ export default function Step2Password({
                     </form>
 
                     {/* Tips untuk user */}
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-6 rounded-lg bg-gray-50 p-4">
                         <div className="flex items-start">
-                            <svg className="w-5 h-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg className="mt-0.5 mr-2 h-5 w-5 flex-shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
                             </svg>
                             <div className="text-sm text-gray-600">
-                                <p className="font-medium mb-1">Tips Keamanan:</p>
-                                <p>Gunakan kombinasi huruf besar, huruf kecil, angka untuk password yang lebih aman. Hindari menggunakan informasi pribadi yang mudah ditebak.</p>
+                                <p className="mb-1 font-medium">Tips Keamanan:</p>
+                                <p>
+                                    Gunakan kombinasi huruf besar, huruf kecil, angka untuk password yang lebih aman. Hindari menggunakan informasi
+                                    pribadi yang mudah ditebak.
+                                </p>
                             </div>
                         </div>
                     </div>
