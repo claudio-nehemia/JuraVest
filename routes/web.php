@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use Inertia\Inertia;
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('wirausaha/ongoingEdit/{wirausaha}/edit', [WirausahaController::class, 'ongoingEdit'])->name('ongoing.edit');
         Route::put('wirausaha/ongoingUpdate/{wirausaha}', [WirausahaController::class, 'ongoingUpdate'])->name('ongoing.update');
         Route::put('wirausaha/newUpdate/{wirausaha}', [WirausahaController::class, 'newUpdate'])->name('new.update');
+        Route::resource('investor', InvestorController::class)->except('show');
 });
 
     Route::get('/messages', [MessageController::class, 'index']);

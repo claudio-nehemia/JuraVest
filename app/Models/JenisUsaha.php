@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class JenisUsaha extends Model
 {
+    protected $table = 'jenis_usahas';
     protected $fillable = [
         'jenis_usaha',
         'icon'
@@ -13,5 +14,10 @@ class JenisUsaha extends Model
 
     public function wirausahas() {
         return $this->hasMany(Wirausaha::class);
+    }
+
+    public function investors()
+    {
+        return $this->hasMany(Investor::class);
     }
 }

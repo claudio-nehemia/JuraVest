@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('investors', function (Blueprint $table) {
             $table->id();
             $table->string('nama_investor');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('target_pasar_invest')->constrained('target_pasars')->onDelete('cascade');
-            $table->foreignId('jenis_usaha_invest')->constrained('target_pasars')->onDelete('cascade');
-            $table->
+            $table->foreignId('jenis_usaha_invest')->constrained('jenis_usahas')->onDelete('cascade');
+            $table->string('tujuan_investasi');
             $table->timestamps();
         });
     }

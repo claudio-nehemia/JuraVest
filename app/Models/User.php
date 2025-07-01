@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasOne(Wirausaha::class);
     }
 
+    public function investor()
+    {
+        return $this->hasOne(Investor::class);
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);

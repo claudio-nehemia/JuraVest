@@ -13,7 +13,8 @@ class Wirausaha extends Model
         'target_pasar_id',
         'usaha_baru',
         'usaha_ongoing',
-        'tipe_usaha'
+        'tipe_usaha',
+        'foto_profil'
     ];
 
     protected $casts = [

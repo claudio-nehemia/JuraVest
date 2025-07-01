@@ -57,6 +57,11 @@ const mainNavItems: NavItem[] = [
         title: 'Wirausaha Baru',
         href: '/admin/wirausaha/newIndex',
         icon: BookOpen
+    },
+    {
+        title: 'Investor',
+        href: '/admin/investor',
+        icon: BookOpen
     }
 ];
 
