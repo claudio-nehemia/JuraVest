@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { router, usePage } from '@inertiajs/react';
+import { MessageCircle } from 'lucide-react';
 
 interface User {
     id: number;
@@ -21,6 +22,7 @@ export default function Navbar() {
     const handleRegister = () => router.visit(route('register'));
     const handleLogin = () => router.visit(route('login'));
     const handleProfile = () => router.visit(route('user.profile'));
+    const handleChat = () => router.visit(route('chat.index'));
 
     return (
         <header className="flex items-center justify-between bg-white p-5 shadow">
@@ -30,7 +32,7 @@ export default function Navbar() {
                 {/* monserrat bold*/}
             </div>
             <nav className="font-poppins mr-6 flex items-center gap-6 text-sm">
-                <a href="#" className="hover:underline">
+                <a href="/home" className="hover:underline">
                     Beranda
                 </a>
                 <a href="#" className="hover:underline">
@@ -43,8 +45,16 @@ export default function Navbar() {
                     Tentang Kami
                 </a>
             </nav>
-            <div className="font-poppins flex gap-4">
+            <div className="font-poppins flex gap-6">
                 {isLoggedIn && auth.user ? (
+                    <div className='flex items-center gap-2'>
+                    <Button
+                        className='rounded-3xl bg-orange-400 w-auto p-5 pr-3 text-white shadow-[0_1px_4px_rgba(0,0,0,0.5)] hover:bg-orange-500'
+                        onClick={handleChat}
+                    >
+                        <MessageCircle/>
+                        Chat
+                    </Button>
                     <Button
                         className="rounded-3xl bg-orange-400 p-5 pr-3 text-white shadow-[0_1px_4px_rgba(0,0,0,0.5)] hover:bg-orange-500"
                         onClick={handleProfile}
@@ -52,6 +62,7 @@ export default function Navbar() {
                         <span>{auth.user.email}</span>
                         <img src={`/storage/${auth.user.foto_profil}`} className="h-7 w-7 rounded-full shadow-[0_0.5px_4px_rgba(0,0,0,0.5)]" />
                     </Button>
+                    </div>
                 ) : (
                     <div>
                         <Button variant="ghost" className="mx-2 rounded-3xl text-orange-500 shadow" onClick={handleLogin}>

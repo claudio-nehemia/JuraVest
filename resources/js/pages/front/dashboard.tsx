@@ -3,6 +3,7 @@ import Navbar from '@/components/navbar';
 import useInView from '@/hooks/useInView'; // pastikan path-nya sesuai
 import { Head } from '@inertiajs/react';
 import React from 'react';
+import WirausahaGrid from '@/components/wirausaha-grid';
 
 export default function Dashboard() {
     const [ref, isInView] = useInView<HTMLDivElement>();
@@ -20,6 +21,7 @@ export default function Dashboard() {
                     Rekomendasi Untuk Anda
                 </p>
             </div>
+            <WirausahaGrid/>
         </section>
     );
 }

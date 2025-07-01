@@ -1,20 +1,25 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\DashboardAdminController;
-use App\Http\Controllers\DataDiriController;
-use App\Http\Controllers\JenisUsahaController;
-use App\Http\Controllers\PekerjaanController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TargetPasarController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WirausahaController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WelcomeController;
+use App\Models\User;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\DataDiriController;
+use App\Http\Controllers\PekerjaanController;
+use App\Http\Controllers\WirausahaController;
+use App\Http\Controllers\JenisUsahaController;
+use App\Http\Controllers\TargetPasarController;
+use App\Http\Controllers\DashboardAdminController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::get('/', function () {
-    return Inertia::render('front/welcome');
-})->name('welcome');
+// Route::get('/', function () {
+//     return Inertia::render('front/welcome');
+// })->name('welcome');
+
+Route::get('/', [WelcomeController::class, 'redirectIfLoggedIn'])->name('welcome');
 
 Route::get('profile', function() {
     return Inertia::render('front/profile');
@@ -60,7 +65,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('wirausaha/ongoingUpdate/{wirausaha}', [WirausahaController::class, 'ongoingUpdate'])->name('ongoing.update');
         Route::put('wirausaha/newUpdate/{wirausaha}', [WirausahaController::class, 'newUpdate'])->name('new.update');
 });
+
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::post('/messages', [MessageController::class, 'store']);
+
+    Route::get('/chat/{user}', function (App\Models\User $user) {
+        return Inertia::render('chat/Show', [
+            'receiverId' => $user->id,
+            'users' => User::where('id', '!=', auth()->id())->get(),
+        ]);
+    })->name('chat.show');
+
+    Route::get('/chat', function () {
+        return Inertia::render('chat/Index', [
+            'users' => User::where('id', '!=', auth()->id())->get(),
+        ]);
+    })->name('chat.index');
 });
+
+Broadcast::routes(['middleware' => ['auth', 'web']]);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
