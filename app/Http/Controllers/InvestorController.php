@@ -49,10 +49,14 @@ class InvestorController extends Controller
         $validated = $request->validate([
             'nama_investor' => 'required|string|max:100',
             'user_id' => 'required|exists:users,id',
-            'target_pasar_invest' => 'required|exists:target_pasars,id',
-            'jenis_usaha_invest' => 'required|exists:jenis_usahas,id',
             'tujuan_investasi' => 'required|string',
-            'foto_profil' => 'nullable|image'
+            'foto_profil' => 'nullable|image',
+
+            'target_pasar_ids' => 'required|array|min:1',
+            'target_pasar_ids.*' => 'exists:target_pasars,id',
+
+            'jenis_usaha_ids' => 'required|array|min:1',
+            'jenis_usaha_ids.*' => 'exists:jenis_usahas,id',
         ]);
 
         if($request->hasFile('foto_profil')) {
@@ -60,6 +64,9 @@ class InvestorController extends Controller
         }
 
         Investor::create($validated);
+
+        $investor->target_pasars()->sync($validated['target_pasar_ids']);
+        $investor->jenis_usahas()->sync($validated['jenis_usaha_ids']);
 
         return redirect()->route('investor.index')->with('success','Investor Berhasil Ditambahkan');
     }
@@ -72,9 +79,15 @@ class InvestorController extends Controller
         $targetPasars = TargetPasar::select('id', 'target_pasar')->get();
         $jenisUsahas = JenisUsaha::select('id', 'jenis_usaha')->get();
         $users = User::select('id', 'name', 'email')->get();
+        $investor->target_pasars()->sync($validated['target_pasar_ids']);
+        $investor->jenis_usahas()->sync($validated['jenis_usaha_ids']);
 
         return Inertia::render('admin/investor/form', [
-            'investor' => $investor,
+            'investor' => [
+                'data' => $investor,
+                'selected_target_pasar_ids' => $investor->target_pasars->pluck('id'),
+                'selected_jenis_usaha_ids' => $investor->jenis_usahas->pluck('id'),
+            ],
             'users' => $users,
             'targetPasars' => $targetPasars,
             'jenisUsahas' => $jenisUsahas,
@@ -90,10 +103,14 @@ class InvestorController extends Controller
         $validated = $request->validate([
             'nama_investor' => 'required|string|max:100',
             'user_id' => 'required|exists:users,id',
-            'target_pasar_invest' => 'required|exists:target_pasars,id',
-            'jenis_usaha_invest' => 'required|exists:jenis_usahas,id',
             'tujuan_investasi' => 'required|string',
-            'foto_profil' => 'nullable|image'
+            'foto_profil' => 'nullable|image',
+
+            'target_pasar_ids' => 'required|array|min:1',
+            'target_pasar_ids.*' => 'exists:target_pasars,id',
+
+            'jenis_usaha_ids' => 'required|array|min:1',
+            'jenis_usaha_ids.*' => 'exists:jenis_usahas,id',
         ]);
 
         if($request->hasFile('foto_profil')) {
@@ -106,6 +123,9 @@ class InvestorController extends Controller
         }
 
         $investor->update($validated);
+
+        $investor->target_pasars()->sync($validated['target_pasar_ids']);
+        $investor->jenis_usahas()->sync($validated['jenis_usaha_ids']);
 
         return redirect()->route('investor.index')->with('success','Investor Berhasil Diperbarui');
     }

@@ -9,8 +9,6 @@ class Investor extends Model
     protected $fillable = [
         'nama_investor',
         'user_id',
-        'target_pasar_invest',
-        'jenis_usaha_invest',
         'tujuan_investasi',
         'foto_profil'
     ];
@@ -19,11 +17,11 @@ class Investor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function target_pasar() {
-        return $this->belongsTo(TargetPasar::class,'target_pasar_invest');
+    public function target_pasars() {
+        return $this->belongsToMany(TargetPasar::class,'investor_target_pasars');
     }
 
-    public function jenis_usaha() {
-        return $this->belongsTo(JenisUsaha::class, 'jenis_usaha_invest');
+    public function jenis_usahas() {
+        return $this->belongsToMany(JenisUsaha::class, 'investor_jenis_usahas');
     }
 }

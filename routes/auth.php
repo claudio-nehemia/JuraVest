@@ -27,6 +27,8 @@ Route::middleware('guest')->group(function () {
             ->name('register.show-role');
         Route::get('set-status-usaha', [RegisteredUserController::class, 'showStatusUsaha'])
             ->name('register.show-statusUsaha');
+        Route::get('show-form-investor', [RegisteredUserController::class, 'showFormInvestor'])
+            ->name('register.show-formInvestor');
         Route::get('show-form-usaha-baru', [RegisteredUserController::class, 'showFormStatusUsahaBaru'])
             ->name('register.show-formStatusUsahaBaru');
         Route::get('show-form-usaha-ongoing', [RegisteredUserController::class, 'showFormStatusUsahaOngoing'])
@@ -43,6 +45,8 @@ Route::middleware('guest')->group(function () {
             ->name('register.store-role');
         Route::post('set-status-usaha', [RegisteredUserController::class, 'storeStatusUsaha'])
             ->name('register.store-statusUsaha');
+        Route::post('show-form-investor', [RegisteredUserController::class, 'storeFormInvestor'])
+            ->name('register.store-formInvestor');
         Route::post('store-form-usaha-baru', [RegisteredUserController::class, 'storeFormStatusUsahaBaru'])
             ->name('register.store-formStatusUsahaBaru');
         Route::post('store-form-usaha-ongoing', [RegisteredUserController::class, 'storeFormStatusUsahaOngoing'])

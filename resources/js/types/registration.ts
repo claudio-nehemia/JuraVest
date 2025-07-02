@@ -1,6 +1,19 @@
 // types/registration.ts
 import { DataDiri } from '@/types/data-diri';
+import { Investor } from '@/types/investor';
 import { UsahaBaruOngoing } from '@/types/usaha-baru-ongoing';
+
+export type Step5 =
+    | {
+          type: 'investor';
+          investor: Investor;
+          completed?: boolean;
+      }
+    | {
+          type: 'umkm';
+          status_usaha: 'usaha_baru' | 'usaha_ongoing';
+          completed?: boolean;
+      };
 
 export interface RegistrationData {
     step1?: {
@@ -20,10 +33,7 @@ export interface RegistrationData {
         role_id: number;
         completed?: boolean;
     };
-    step5?: {
-        status_usaha: 'usaha_baru' | 'usaha_ongoing';
-        completed?: boolean;
-    };
+    step5?: Step5;
     step6?: UsahaBaruOngoing & {
         completed?: boolean;
     };
