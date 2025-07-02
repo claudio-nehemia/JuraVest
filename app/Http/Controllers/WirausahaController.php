@@ -296,7 +296,7 @@ class WirausahaController extends Controller
         $user = User::find($request->user_id);
         if ($user && $user->role_id === 2) {
 
-            // Validasi input
+            // Validasi input   
             $validated = $request->validate([
                     'user_id' => 'required|exists:users,id',
                     'nama_usaha' => 'required|string|max:50',

@@ -35,13 +35,13 @@ export default function Navbar() {
                 <a href="/home" className="hover:underline">
                     Beranda
                 </a>
-                <a href="#" className="hover:underline">
+                <a href="/investor" className="hover:underline">
                     Investor
                 </a>
-                <a href="#" className="hover:underline">
+                <a href="/wirausaha" className="hover:underline">
                     Pengusaha
                 </a>
-                <a href="#" className="hover:underline">
+                <a href="/about" className="hover:underline">
                     Tentang Kami
                 </a>
             </nav>

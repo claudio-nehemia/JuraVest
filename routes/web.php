@@ -26,6 +26,21 @@ Route::get('profile', function() {
     return Inertia::render('front/profile');
 })->name('user.profile');
 
+Route::get('wirausaha-detail', function() {
+    return Inertia::render('front/wirausaha-detail');
+})->name('wirausaha.detail');
+
+Route::get('investor-detail', function() {
+    return Inertia::render('front/investor-detail');
+})->name('investor.detail');
+
+Route::get('wirausaha', function() {
+    return Inertia::render('front/wirausaha');
+})->name('wirausaha.all');
+
+Route::get('investor', function() {
+    return Inertia::render('front/investor');
+})->name('investor.all');
 // Route::get('inputName', [RegisteredUserController::class, 'showBasicInfo'])->name('register1');
 // Route::get('setPassword', function(){
 //     return Inertia::render('auth/register/step2SetPassword');
@@ -44,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('front/dashboard');
     })->name('home');
     Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+  
 
     // Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
 
