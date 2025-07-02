@@ -1,3 +1,4 @@
+import { Investor } from '@/types/investor';
 import { RegistrationData } from '@/types/registration';
 import { UsahaBaru, UsahaOngoing } from '@/types/usaha-baru-ongoing';
 import { Head, router, usePage } from '@inertiajs/react';
@@ -7,6 +8,7 @@ import Step2Password from './step2SetPassword';
 import Step3DataDiri from './step3FormDataDiri';
 import Step4RoleSelection from './step4SetRole';
 import Step5StatusUsaha from './step5SetStatusUsaha';
+import Step5bFormInvestor from './step5bFormInvestor';
 import Step6aFormUsahaBaru from './step6aFormUsahaBaru';
 import Step6bFormUsahaOngoing from './step6bFormUsahaOngoing';
 
@@ -175,88 +177,129 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
         }
     }, []);
 
-    const handleStep4Next = useCallback(async (data: { role_id: number }) => {
-        console.log('handleStep4Next called with:', data);
-        setLoading(true);
-        setErrors({});
+    const handleStep4Next = useCallback(
+        async (data: { role_id: number }) => {
+            console.log('handleStep4Next called with:', data);
+            setLoading(true);
+            setErrors({});
 
-        try {
-            await new Promise((resolve, reject) => {
-                router.post('/register/set-role', data, {
-                    preserveState: true,
-                    onSuccess: () => {
-                        console.log('Step 4 success:', data);
+            try {
+                await new Promise((resolve, reject) => {
+                    router.post('/register/set-role', data, {
+                        preserveState: true,
+                        onSuccess: () => {
+                            console.log('Step 4 success:', data);
 
-                        setUserData((prev) => ({
-                            ...prev,
-                            step4: {
-                                role_id: data.role_id,
-                                completed: true,
-                            },
-                        }));
-
-                        setCurrentStep(5);
-
-                        resolve(true);
-                    },
-                    onError: (serverErrors) => {
-                        console.error('Step 4 errors:', serverErrors);
-                        setErrors(serverErrors);
-                        reject(serverErrors);
-                    },
-                    onFinish: () => {
-                        setLoading(false);
-                    },
-                });
-            });
-        } catch (error) {
-            console.error('Step 4 catch error:', error);
-        }
-    }, []);
-
-    const handleStep5Next = useCallback(async (data: { status_usaha: 'usaha_baru' | 'usaha_ongoing' }) => {
-        console.log('handleStep5Next called with:', data);
-        setLoading(true);
-        setErrors({});
-
-        try {
-            await new Promise((resolve, reject) => {
-                router.post('/register/set-status-usaha', data, {
-                    preserveState: true,
-                    onSuccess: () => {
-                        setUserData((prev) => {
-                            const statusBerubah = prev.step5?.status_usaha !== data.status_usaha;
-
-                            const updated = {
+                            setUserData((prev) => ({
                                 ...prev,
-                                step5: {
-                                    status_usaha: data.status_usaha,
+                                step4: {
+                                    role_id: data.role_id,
                                     completed: true,
                                 },
-                            };
+                            }));
 
-                            if (statusBerubah) {
-                                console.log('Status usaha berubah, data step6 dihapus');
-                                delete updated.step6;
-                            }
+                            setCurrentStep(5);
 
-                            return updated;
-                        });
-                        setCurrentStep(6);
-                        resolve(true);
-                    },
-                    onError: (serverErrors) => {
-                        console.error('Step 5 errors:', serverErrors);
-                        setErrors(serverErrors);
-                        reject(serverErrors);
-                    },
-                    onFinish: () => setLoading(false),
+                            resolve(true);
+                        },
+                        onError: (serverErrors) => {
+                            console.error('Step 4 errors:', serverErrors);
+                            setErrors(serverErrors);
+                            reject(serverErrors);
+                        },
+                        onFinish: () => {
+                            setLoading(false);
+                        },
+                    });
                 });
-            });
-        } catch (error) {
-            console.error('Step 5 catch error:', error);
-        }
-    }, []);
+            } catch (error) {
+                console.error('Step 4 catch error:', error);
+            }
+        },
+        [userData, registrationData],
+    );
+
+    const handleStep5Next = useCallback(
+        async (data: { status_usaha: 'usaha_baru' | 'usaha_ongoing' } | Investor) => {
+            console.log('handleStep5Next called with:', data);
+            setLoading(true);
+            setErrors({});
+
+            const isInvestor = userData?.step4?.role_id === 1;
+
+            try {
+                if (isInvestor) {
+                    await new Promise((resolve, reject) => {
+                        router.post('/register/show-form-investor', data, {
+                            preserveState: true,
+                            onSuccess: () => {
+                                console.log('Registrasi investor berhasil.');
+
+                                setUserData((prev) => ({
+                                    ...prev,
+                                    step5: {
+                                        type: 'investor',
+                                        investor: data as Investor,
+                                        completed: true,
+                                    },
+                                }));
+
+                                resolve(true);
+                            },
+                            onError: (serverErrors) => {
+                                console.error('Step5b registrasi investor error:', serverErrors);
+                                setErrors(serverErrors);
+                                reject(serverErrors);
+                            },
+                            onFinish: () => setLoading(false),
+                        });
+                    });
+
+                    return;
+                }
+
+                const statusData = data as { status_usaha: 'usaha_baru' | 'usaha_ongoing' };
+
+                await new Promise((resolve, reject) => {
+                    router.post('/register/set-status-usaha', statusData, {
+                        preserveState: true,
+                        onSuccess: () => {
+                            setUserData((prev) => {
+                                const statusBerubah = prev.step5?.type === 'umkm' && prev.step5.status_usaha !== data.status_usaha;
+
+                                const updated = {
+                                    ...prev,
+                                    step5: {
+                                        type: 'umkm' as const,
+                                        status_usaha: statusData.status_usaha,
+                                        completed: true,
+                                    },
+                                };
+
+                                if (statusBerubah) {
+                                    console.log('Status usaha berubah, data step6 dihapus');
+                                    delete updated.step6;
+                                }
+
+                                return updated;
+                            });
+                            setCurrentStep(6);
+                            resolve(true);
+                        },
+                        onError: (serverErrors) => {
+                            console.error('Step 5 errors:', serverErrors);
+                            setErrors(serverErrors);
+                            reject(serverErrors);
+                        },
+                        onFinish: () => setLoading(false),
+                    });
+                });
+            } catch (error) {
+                console.error('Step 5 catch error:', error);
+            }
+        },
+        [userData, registrationData],
+    );
 
     const handleStep6Next = useCallback(
         async (data: any) => {
@@ -264,7 +307,8 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
             setLoading(true);
             setErrors({});
 
-            const statusUsaha = userData?.step5?.status_usaha;
+            // const statusUsaha = userData?.step5?.status_usaha;
+            const statusUsaha = userData?.step5?.type === 'umkm' && userData.step5.status_usaha;
 
             const endpoint = statusUsaha === 'usaha_baru' ? '/register/store-form-usaha-baru' : '/register/store-form-usaha-ongoing';
 
@@ -294,7 +338,7 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
                 console.error('Step 6 error:', error);
             }
         },
-        [userData],
+        [userData, registrationData],
     );
 
     const handleStep2Back = useCallback(() => {
@@ -393,7 +437,7 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
     //DEBUG STEP 5
     useEffect(() => {
         console.log('✅ step5 completed:', userData?.step5?.completed);
-        console.log('✅ status usaha:', userData?.step5?.status_usaha);
+        console.log('✅ status usaha:', userData?.step5?.type === 'umkm' && userData?.step5?.status_usaha);
         console.log('✅ current step:', currentStep);
         console.log('⏳ Reloaded! props.registrationData:', registrationData);
     }, [userData, currentStep]);
@@ -435,7 +479,7 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
                 />
             )}
 
-            {currentStep === 5 && (
+            {/* {currentStep === 5 && (
                 <Step5StatusUsaha
                     onNext={handleStep5Next}
                     onBack={handleStep5Back}
@@ -444,9 +488,35 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
                     errors={errors}
                     initialData={userData?.step5}
                 />
+            )} */}
+
+            {currentStep === 5 && (
+                <>
+                    {userData?.step4?.role_id === 1 ? (
+                        <Step5bFormInvestor
+                            onNext={handleStep5Next}
+                            onBack={handleStep5Back}
+                            userData={userData}
+                            processing={loading}
+                            errors={errors}
+                            jenisUsahaOptions={jenisUsahaOptions}
+                            targetPasarOptions={targetPasarOptions}
+                            initialData={userData?.step5?.type === 'investor' ? userData.step5.investor : undefined}
+                        />
+                    ) : (
+                        <Step5StatusUsaha
+                            onNext={handleStep5Next}
+                            onBack={handleStep5Back}
+                            userData={userData}
+                            processing={loading}
+                            errors={errors}
+                            initialData={userData?.step5?.type === 'umkm' ? { status_usaha: userData.step5.status_usaha } : undefined}
+                        />
+                    )}
+                </>
             )}
 
-            {currentStep === 6 && userData?.step5?.status_usaha === 'usaha_baru' && (
+            {currentStep === 6 && userData?.step5?.type === 'umkm' && userData?.step5?.status_usaha === 'usaha_baru' && (
                 <Step6aFormUsahaBaru
                     onNext={handleStep6Next}
                     onBack={handleStep6Back}
@@ -455,11 +525,13 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
                     errors={errors}
                     jenisUsahaOptions={jenisUsahaOptions}
                     targetPasarOptions={targetPasarOptions}
-                    initialData={userData?.step5?.status_usaha === 'usaha_baru' ? (userData.step6 as UsahaBaru) : undefined}
+                    initialData={
+                        userData?.step5?.type === 'umkm' && userData?.step5?.status_usaha === 'usaha_baru' ? (userData.step6 as UsahaBaru) : undefined
+                    }
                 />
             )}
 
-            {currentStep === 6 && userData?.step5?.status_usaha === 'usaha_ongoing' && (
+            {currentStep === 6 && userData?.step5?.type === 'umkm' && userData?.step5?.status_usaha === 'usaha_ongoing' && (
                 <Step6bFormUsahaOngoing
                     onNext={handleStep6Next}
                     onBack={handleStep6Back}
@@ -468,7 +540,11 @@ export default function MultiStepRegister({ roles = [], initialStep = 1, registr
                     errors={errors}
                     jenisUsahaOptions={jenisUsahaOptions}
                     targetPasarOptions={targetPasarOptions}
-                    initialData={userData?.step5?.status_usaha === 'usaha_ongoing' ? (userData.step6 as UsahaOngoing) : undefined}
+                    initialData={
+                        userData?.step5?.type === 'umkm' && userData?.step5?.status_usaha === 'usaha_ongoing'
+                            ? (userData.step6 as UsahaOngoing)
+                            : undefined
+                    }
                 />
             )}
 
