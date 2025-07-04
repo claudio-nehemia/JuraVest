@@ -24,4 +24,4 @@ yarn-error.log
 /.zed
 components.json
 package-lock.json
-*.json
+# *.json
