@@ -78,6 +78,39 @@ class InvestorController extends Controller
     /**
      * Display the specified resource.
      */
+    public function show(Investor $investor)
+    {
+        $investor->load('user'); // memuat relasi user
+
+        // Generate foto_profil_url jika ada
+        $investor->foto_profil_url = $investor->foto_profil ? asset('storage/' . $investor->foto_profil) : null;
+
+        // Ambil data master untuk menampilkan label jenis usaha dan target pasar
+        $jenisUsahas = JenisUsaha::select('id', 'jenis_usaha')->get();
+        $targetPasars = TargetPasar::select('id', 'target_pasar')->get();
+
+        // Cari label jenis_usaha_invest
+        $jenisUsahaLabels = [];
+        if ($investor->jenis_usaha_invest && is_array($investor->jenis_usaha_invest)) {
+            $jenisUsahaLabels = $jenisUsahas->whereIn('id', $investor->jenis_usaha_invest)->pluck('jenis_usaha');
+        }
+
+        // Cari label target_pasar_invest
+        $targetPasarLabels = [];
+        if ($investor->target_pasar_invest && is_array($investor->target_pasar_invest)) {
+            $targetPasarLabels = $targetPasars->whereIn('id', $investor->target_pasar_invest)->pluck('target_pasar');
+        }
+
+        return Inertia::render('admin/investor/show', [
+            'investor' => $investor,
+            'jenisUsahaLabels' => $jenisUsahaLabels,
+            'targetPasarLabels' => $targetPasarLabels,
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
     public function edit(Investor $investor)
     {
         $jenisUsahas = JenisUsaha::select('id', 'jenis_usaha')->get();
