@@ -18,8 +18,8 @@ interface Investor {
     id: number;
     nama_investor: string;
     user_id: number;
-    target_pasar_invest: number;
-    jenis_usaha_invest: number;
+    target_pasar_invest: number[];
+    jenis_usaha_invest: number[];
     tujuan_investasi: string;
     foto_profil: string | null;
     foto_profil_url: string | null
@@ -43,8 +43,8 @@ const InvestorForm = () => {
         ...(isEditing ? { _method: 'put' } : {}),
         nama_investor: investor?.nama_investor || '',
         user_id: investor?.user_id || '',
-        target_pasar_invest: investor?.target_pasar_invest || '',
-        jenis_usaha_invest: investor?.jenis_usaha_invest || '',
+        target_pasar_invest: investor?.target_pasar_invest || [],
+        jenis_usaha_invest: investor?.jenis_usaha_invest || [],
         tujuan_investasi: investor?.tujuan_investasi || '',
         foto_profil: null as File | null,
     });
@@ -65,7 +65,6 @@ const InvestorForm = () => {
 
     const pageTitle = isEditing ? "Edit Investor" : "Tambah Investor";
     const buttonText = processing ? 'Menyimpan...' : (isEditing ? 'Simpan Perubahan' : 'Simpan');
-
 
     return (
         <AppLayout>
@@ -97,7 +96,7 @@ const InvestorForm = () => {
                                     <Label>Role</Label>
                                     <select
                                         value={data.user_id}
-                                        onChange={(e) => setData('user_id', isEditing ? parseInt(e.target.value) : e.target.value)}
+                                        onChange={(e) => setData('user_id', parseInt(e.target.value) || '')}
                                         className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400"
                                     >
                                         <option value="">Pilih User</option>
@@ -111,74 +110,96 @@ const InvestorForm = () => {
                                         {errors.user_id && <InputError message={errors.user_id} />}
                                     </div>
                                 </div>
-                                {/* Role & No Telp side-by-side */}
+
+                                {/* Checkboxes side-by-side */}
                                 <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4">
                                     {/* TARGET PASAR */}
                                     <div className="flex flex-col space-y-0.5 mb-2">
                                         <Label>Target Pasar Invest</Label>
-                                        <select
-                                            value={data.target_pasar_invest}
-                                            onChange={(e) => setData('target_pasar_invest', isEditing ? parseInt(e.target.value) : e.target.value)}
-                                            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                                        >
-                                            <option value="">Pilih Target Pasar</option>
-                                            {targetPasars.map((targetPasar) => (
-                                                <option key={targetPasar.id} value={targetPasar.id}>
-                                                    {targetPasar.target_pasar}
-                                                </option>
+                                        <div className="flex flex-wrap gap-4">
+                                            {targetPasars.map((item) => (
+                                                <label key={item.id} className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={item.id}
+                                                        checked={data.target_pasar_invest.includes(item.id)}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            const itemId = parseInt(e.target.value); // Convert to integer
+                                                            setData(
+                                                                'target_pasar_invest',
+                                                                checked
+                                                                    ? [...data.target_pasar_invest, itemId]
+                                                                    : data.target_pasar_invest.filter((id: number) => id !== itemId)
+                                                            );
+                                                        }}
+                                                        className="form-checkbox accent-yellow-500"
+                                                    />
+                                                    <span>{item.target_pasar}</span>
+                                                </label>
                                             ))}
-                                        </select>
+                                        </div>
                                         <div className="min-h-[1rem]">
                                             {errors.target_pasar_invest && <InputError message={errors.target_pasar_invest} />}
                                         </div>
                                     </div>
 
-                                    {/* No Telp */}
+                                    {/* JENIS USAHA */}
                                     <div className="flex flex-col space-y-0.5 mb-2">
                                         <Label>Jenis Usaha Invest</Label>
-                                        <select
-                                            value={data.jenis_usaha_invest}
-                                            onChange={(e) => setData('jenis_usaha_invest', isEditing ? parseInt(e.target.value) : e.target.value)}
-                                            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                                        >
-                                            <option value="">Pilih Jenis Usaha</option>
-                                            {jenisUsahas.map((jenisUsaha) => (
-                                                <option key={jenisUsaha.id} value={jenisUsaha.id}>
-                                                    {jenisUsaha.jenis_usaha}
-                                                </option>
+                                        <div className="flex flex-wrap gap-4">
+                                            {jenisUsahas.map((item) => (
+                                                <label key={item.id} className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={item.id}
+                                                        checked={data.jenis_usaha_invest.includes(item.id)}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            const itemId = parseInt(e.target.value); // Convert to integer
+                                                            setData(
+                                                                'jenis_usaha_invest',
+                                                                checked
+                                                                    ? [...data.jenis_usaha_invest, itemId]
+                                                                    : data.jenis_usaha_invest.filter((id: number) => id !== itemId)
+                                                            );
+                                                        }}
+                                                        className="form-checkbox accent-yellow-500"
+                                                    />
+                                                    <span>{item.jenis_usaha}</span>
+                                                </label>
                                             ))}
-                                        </select>
+                                        </div>
                                         <div className="min-h-[1rem]">
                                             {errors.jenis_usaha_invest && <InputError message={errors.jenis_usaha_invest} />}
                                         </div>
                                     </div>
                                 </div>
 
-
                                 <div className="col-span-2 flex flex-col space-y-0.5 mb-2">
                                     <Label>Tujuan Investasi</Label>
                                     <textarea
-                                    value={data.tujuan_investasi}
-                                    onChange={(e) => setData('tujuan_investasi', e.target.value)}
-                                    rows={6}
-                                    className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={data.tujuan_investasi}
+                                        onChange={(e) => setData('tujuan_investasi', e.target.value)}
+                                        rows={6}
+                                        className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
                                     />
                                     <div className="min-h-[1rem]">
-                                            {errors.tujuan_investasi && <InputError message={errors.tujuan_investasi} /> }
+                                        {errors.tujuan_investasi && <InputError message={errors.tujuan_investasi} />}
                                     </div>
                                 </div>
 
-                                {/* Foto_Profil */}
+                                {/* Foto Profil */}
                                 <div className="col-span-2 space-y-0.5">
-                                <Label>Foto Profil</Label>
+                                    <Label>Foto Profil</Label>
                                     {isEditing && investor?.foto_profil_url && (
-                                    <img src={investor.foto_profil_url} alt={investor.nama_investor} className="mb-2 h-32 w-32 rounded object-cover border" />
-                                        )}
-                                        <Input 
-                                            type="file" 
-                                            accept="image/*"
-                                            onChange={(e) => setData('foto_profil', e.target.files?.[0] || null)} 
-                                        />
+                                        <img src={investor.foto_profil_url} alt={investor.nama_investor} className="mb-2 h-32 w-32 rounded object-cover border" />
+                                    )}
+                                    <Input 
+                                        type="file" 
+                                        accept="image/*"
+                                        onChange={(e) => setData('foto_profil', e.target.files?.[0] || null)} 
+                                    />
                                     <div className="min-h-[1rem]">
                                         {errors.foto_profil && <InputError message={errors.foto_profil} />}
                                     </div>
@@ -204,6 +225,5 @@ const InvestorForm = () => {
         </AppLayout>
     );
 };
-
 
 export default InvestorForm;

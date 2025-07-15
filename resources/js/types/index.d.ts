@@ -83,7 +83,10 @@ export interface Wirausaha {
   usaha_baru?: UsahaBaru;
   user?: User;
   jenis_usaha?: JenisUsaha;
+  match_score: number;
   target_pasar?: TargetPasar;
+  foto_profil: string | null;
+  foto_profil_url: string | null;
   created_at: string;
   updated_at: string;
 }

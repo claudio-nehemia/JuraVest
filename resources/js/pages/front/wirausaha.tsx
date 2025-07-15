@@ -9,199 +9,73 @@ import {
 import { ArrowRight, Search, Filter, MapPin, Star, Users } from 'lucide-react';
 import Navbar from '@/components/navbar';
 
-const pengusahas = [
-  {
-    nama: 'Toko Pak Bejo',
-    foto: 'bejo.png',
-    deskripsi: 'Toko ini adalah toko makanan enak nomor 1 di Indonesia, namun sedang membutuhkan dana darurat',
-    kategori: 'Kuliner',
-    color: 'from-orange-400 to-red-500',
-    rating: 4.8,
-    lokasi: 'Jakarta'
-  },
-  {
-    nama: 'Toko Ibu Nani',
-    foto: 'nani.png',
-    deskripsi: 'Toko ini adalah toko bangunan nomor 1 di Indonesia, tetapi barang-barang material bangunannya hilang dimakan harimau',
-    kategori: 'Bangunan',
-    color: 'from-blue-400 to-purple-500',
-    rating: 4.5,
-    lokasi: 'Surabaya'
-  },
-  {
-    nama: 'Toko Bapak Solihin',
-    foto: 'solihin.png',
-    deskripsi: 'Toko ini adalah toko buah terbaik di Samarinda, namun buah-buah yang dijual dicuri oleh monyet sehingga dia kehilangan aset',
-    kategori: 'Buah-buahan',
-    color: 'from-green-400 to-emerald-500',
-    rating: 4.7,
-    lokasi: 'Samarinda'
-  },
-  {
-    nama: 'Toko Amerika',
-    foto: 'amerika.png',
-    deskripsi: 'Toko ini adalah toko senjata terbaik di jagat raya, pernah menghancurkan bulan di planet Mars',
-    kategori: 'Persenjataan',
-    color: 'from-gray-400 to-gray-600',
-    rating: 4.9,
-    lokasi: 'Mars'
-  },
-  {
-    nama: 'Toko Kopi Mas Rian',
-    foto: 'kopi.png',
-    deskripsi: 'Toko kopi legendaris yang kabarnya bisa bikin kamu sadar dari mantan',
-    kategori: 'Minuman',
-    color: 'from-yellow-400 to-orange-400',
-    rating: 4.6,
-    lokasi: 'Bandung'
-  },
-  {
-    nama: 'Toko Jamu Jeng Dewi',
-    foto: 'jamu.png',
-    deskripsi: 'Jual jamu dengan resep turun-temurun, bisa menyembuhkan patah hati katanya',
-    kategori: 'Kesehatan',
-    color: 'from-green-200 to-green-500',
-    rating: 4.4,
-    lokasi: 'Yogyakarta'
-  },
-  {
-    nama: 'Toko Kayu Mbah Slamet',
-    foto: 'kayu.png',
-    deskripsi: 'Menjual berbagai jenis kayu tua mistis yang katanya bisa usir tuyul',
-    kategori: 'Material',
-    color: 'from-amber-600 to-yellow-700',
-    rating: 4.3,
-    lokasi: 'Solo'
-  },
-  {
-    nama: 'Toko Elektronik Pak Elon',
-    foto: 'elon.png',
-    deskripsi: 'Menjual barang elektronik bekas luar angkasa, katanya bekas satelit jatuh',
-    kategori: 'Teknologi',
-    color: 'from-sky-500 to-indigo-500',
-    rating: 4.8,
-    lokasi: 'Batam'
-  },
-  {
-    nama: 'Toko Fashion Mbak Cici',
-    foto: 'fashion.png',
-    deskripsi: 'Fashion kekinian untuk kamu yang ingin tampil kece saat rebahan',
-    kategori: 'Fashion',
-    color: 'from-pink-400 to-rose-500',
-    rating: 4.5,
-    lokasi: 'Jakarta'
-  },
-  {
-    nama: 'Toko Mainan Pak Toy',
-    foto: 'toys.png',
-    deskripsi: 'Jual mainan edukatif dari masa kecil generasi 90-an hingga generasi sekarang',
-    kategori: 'Mainan',
-    color: 'from-yellow-300 to-orange-500',
-    rating: 4.7,
-    lokasi: 'Malang'
-  },
-  {
-    nama: 'Toko Buku Bang Rizal',
-    foto: 'buku.png',
-    deskripsi: 'Toko buku langka yang menyimpan buku-buku dari dimensi lain',
-    kategori: 'Pendidikan',
-    color: 'from-indigo-400 to-indigo-600',
-    rating: 4.9,
-    lokasi: 'Medan'
-  },
-  {
-    nama: 'Toko Keramik Tante Meli',
-    foto: 'keramik.png',
-    deskripsi: 'Menjual keramik antik dari peradaban kuno yang bisa ngobrol kalau malam',
-    kategori: 'Dekorasi',
-    color: 'from-gray-200 to-gray-400',
-    rating: 4.2,
-    lokasi: 'Bali'
-  },
-  {
-    nama: 'Toko Petualangan Pak Rimba',
-    foto: 'rimba.png',
-    deskripsi: 'Jual perlengkapan survival yang katanya dipakai waktu ekspedisi Atlantis',
-    kategori: 'Outdoor',
-    color: 'from-lime-400 to-lime-600',
-    rating: 4.6,
-    lokasi: 'Balikpapan'
-  },
-  {
-    nama: 'Toko Musik Bang Reza',
-    foto: 'musik.png',
-    deskripsi: 'Toko alat musik lengkap, dari ukulele hingga harpa mistik',
-    kategori: 'Musik',
-    color: 'from-purple-300 to-purple-600',
-    rating: 4.8,
-    lokasi: 'Semarang'
-  },
-  {
-    nama: 'Toko Gadget Kak Nova',
-    foto: 'gadget.png',
-    deskripsi: 'Tempat nongkrongnya gadget-gadget canggih yang belum rilis di Bumi',
-    kategori: 'Gadget',
-    color: 'from-cyan-400 to-teal-500',
-    rating: 4.9,
-    lokasi: 'Jakarta'
-  },
-  {
-    nama: 'Toko Game Pak Developer',
-    foto: 'game.png',
-    deskripsi: 'Jual game legal dan ilegal, bahkan ada game simulasi dunia nyata',
-    kategori: 'Hiburan',
-    color: 'from-red-400 to-red-600',
-    rating: 4.7,
-    lokasi: 'Tangerang'
-  },
-  {
-    nama: 'Toko Kue Tante Rara',
-    foto: 'kue.png',
-    deskripsi: 'Kue buatan tangan langsung dari oven neraka, tapi manis banget kok!',
-    kategori: 'Kuliner',
-    color: 'from-pink-300 to-red-400',
-    rating: 4.5,
-    lokasi: 'Bogor'
-  },
-  {
-    nama: 'Toko Tanaman Mas Ucup',
-    foto: 'tanaman.png',
-    deskripsi: 'Tanaman hias yang bisa gerak sendiri kalau dikasih lagu dangdut',
-    kategori: 'Hobi',
-    color: 'from-green-300 to-lime-400',
-    rating: 4.4,
-    lokasi: 'Depok'
-  },
-  {
-    nama: 'Toko Motor Pak Rossi',
-    foto: 'motor.png',
-    deskripsi: 'Menjual motor bekas balapan MotoGP, lengkap dengan bekas bannya',
-    kategori: 'Otomotif',
-    color: 'from-red-500 to-yellow-500',
-    rating: 4.8,
-    lokasi: 'Bekasi'
-  },
-  {
-    nama: 'Toko Furniture Bang Jack',
-    foto: 'furniture.png',
-    deskripsi: 'Furniture handmade dari kayu langka yang katanya bisa bicara saat hujan',
-    kategori: 'Perabot',
-    color: 'from-amber-300 to-orange-600',
-    rating: 4.6,
-    lokasi: 'Cirebon'
-  },
-  {
-    nama: 'Toko Sihir Bu Maya',
-    foto: 'sihir.png',
-    deskripsi: 'Jual ramuan, mantra, dan sapu terbang edisi terbatas',
-    kategori: 'Mistis',
-    color: 'from-purple-800 to-indigo-900',
-    rating: 4.9,
-    lokasi: 'Dimensi Lain'
-  }
-];
+// TypeScript interfaces
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
 
-const categories = ['Semua', ...Array.from(new Set(pengusahas.map(p => p.kategori)))];
+interface JenisUsaha {
+  id: number;
+  nama: string;
+}
+
+interface TargetPasar {
+  id: number;
+  nama: string;
+}
+
+interface Wirausaha {
+  id: number;
+  nama_usaha: string;
+  foto_profil?: string;
+  jenis_usaha_id: number;
+  target_pasar_id: number;
+  tipe_usaha: string;
+  match_score: number;
+  user?: User;
+  jenis_usaha?: JenisUsaha;
+  target_pasar?: TargetPasar;
+}
+
+interface JenisUsaha {
+  id: number;
+  jenis_usaha: string;
+}
+
+interface WirausahaProps {
+  rekomendasi?: Wirausaha[];
+  categories?: JenisUsaha[];
+}
+
+// Function to generate random color gradients
+const generateRandomGradient = (index: number): string => {
+  const gradients = [
+    'from-orange-400 to-red-500',
+    'from-blue-400 to-purple-500',
+    'from-green-400 to-emerald-500',
+    'from-yellow-400 to-orange-400',
+    'from-green-200 to-green-500',
+    'from-amber-600 to-yellow-700',
+    'from-sky-500 to-indigo-500',
+    'from-pink-400 to-rose-500',
+    'from-yellow-300 to-orange-500',
+    'from-indigo-400 to-indigo-600',
+    'from-gray-200 to-gray-400',
+    'from-lime-400 to-lime-600',
+    'from-purple-300 to-purple-600',
+    'from-cyan-400 to-teal-500',
+    'from-red-400 to-red-600',
+    'from-pink-300 to-red-400',
+    'from-green-300 to-lime-400',
+    'from-red-500 to-yellow-500',
+    'from-amber-300 to-orange-600',
+    'from-purple-800 to-indigo-900',
+  ];
+  
+  return gradients[index % gradients.length];
+};
 
 const animationStyles = `
   @keyframes slideInLeft {
@@ -242,23 +116,33 @@ const animationStyles = `
   }
 `;
 
-export default function Wirausaha() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Semua');
+const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories = [] }) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
 
-  const filteredPengusahas = useMemo(() => {
-    return pengusahas.filter(usaha => {
-      const matchesSearch = usaha.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           usaha.deskripsi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           usaha.lokasi.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'Semua' || usaha.kategori === selectedCategory;
+  // Create category options including "Semua"
+  const categoryOptions = useMemo(() => {
+    return ['Semua', ...categories.map(cat => cat.jenis_usaha)]; // ✅ Correct - using jenis_usaha property
+  }, [categories]);
+
+  const filteredWirausaha = useMemo(() => {
+    return rekomendasi.filter(wirausaha => {
+      const matchesSearch = wirausaha.nama_usaha.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          wirausaha.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          wirausaha.jenis_usaha?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          wirausaha.tipe_usaha?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // ✅ Fixed - now comparing with the correct property from categories
+      const matchesCategory = selectedCategory === 'Semua' || 
+                            selectedCategory === categories.find(cat => cat.id === wirausaha.jenis_usaha_id)?.jenis_usaha;
+      
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, rekomendasi, categories]);
 
   return (
     <div className="min-h-screen bg-white">
-    <Navbar/>
+      <Navbar/>
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
       
       {/* Hero Section */}
@@ -281,7 +165,7 @@ export default function Wirausaha() {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
               <input
                 type="text"
-                placeholder="Cari toko, kategori, atau lokasi..."
+                placeholder="Cari nama usaha, pemilik, atau jenis usaha..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm text-lg"
@@ -291,7 +175,7 @@ export default function Wirausaha() {
             {/* Category Filter */}
             <div className="flex flex-wrap gap-3 justify-center">
               <Filter className="text-gray-400 h-5 w-5 mt-2" />
-              {categories.map((category) => (
+              {categoryOptions.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -310,7 +194,7 @@ export default function Wirausaha() {
           {/* Results Count */}
           <div className="text-center mb-8">
             <p className="text-gray-400 text-lg">
-              Menampilkan <span className="text-purple-400 font-bold">{filteredPengusahas.length}</span> wirausaha
+              Menampilkan <span className="text-purple-400 font-bold">{filteredWirausaha.length}</span> wirausaha
             </p>
           </div>
         </div>
@@ -319,22 +203,23 @@ export default function Wirausaha() {
       {/* Main Content */}
       <main className="container mx-auto px-4 pb-16">
         <div className="space-y-8">
-          {filteredPengusahas.length === 0 ? (
+          {filteredWirausaha.length === 0 ? (
             <div className="text-center py-16">
               <div className="text-6xl mb-4">🔍</div>
               <h3 className="text-2xl font-bold text-gray-300 mb-2">Tidak Ada Hasil</h3>
               <p className="text-gray-400">Coba ubah kata kunci pencarian atau filter kategori</p>
             </div>
           ) : (
-            filteredPengusahas.map((usaha, index) => (
+            filteredWirausaha.map((wirausaha, index) => (
               <Card
-                key={`${usaha.nama}-${index}`}
+                key={`${wirausaha.id}-${index}`}
                 className={`
                   group overflow-hidden border-none
-                  bg-gradient-to-r ${usaha.color} 
+                  bg-gradient-to-r ${generateRandomGradient(index)} 
                   shadow-2xl transition-all duration-500 ease-out
                   hover:shadow-purple-500/25 hover:-translate-y-1
                   slide-in-left rounded-3xl
+                  ${wirausaha.match_score > 0 ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}
                 `}
                 style={{ 
                   animationDelay: `${index * 0.1}s` 
@@ -344,17 +229,29 @@ export default function Wirausaha() {
                   {/* Image Section */}
                   <div className="relative md:w-80 h-64 md:h-auto flex-shrink-0">
                     <div className="w-full h-full bg-gradient-to-br from-black/20 to-black/40 rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none overflow-hidden">
-                      <div className="w-full h-full bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center">
-                        <div className="text-6xl">🏪</div>
-                      </div>
+                      {wirausaha.foto_profil ? (
+                        <img 
+                          src={`/storage/${wirausaha.foto_profil}`} 
+                          alt={wirausaha.nama_usaha}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-white/10 to-transparent flex items-center justify-center">
+                          <div className="text-6xl">🏪</div>
+                        </div>
+                      )}
                     </div>
                     <div className="absolute top-4 left-4 glass-effect px-3 py-1 rounded-full">
-                      <span className="text-white text-sm font-semibold">{usaha.kategori}</span>
+                      <span className="text-white text-sm font-semibold">
+                        {wirausaha.jenis_usaha?.nama || 'Umum'}
+                      </span>
                     </div>
-                    <div className="absolute top-4 right-4 glass-effect px-3 py-1 rounded-full flex items-center gap-1">
-                      <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="text-white text-sm font-bold">{usaha.rating}</span>
-                    </div>
+                    {wirausaha.match_score > 0 && (
+                      <div className="absolute top-4 right-4 glass-effect px-3 py-1 rounded-full flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="text-white text-sm font-bold">Match</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Content Section */}
@@ -362,30 +259,38 @@ export default function Wirausaha() {
                     <CardHeader className="p-0 mb-4">
                       <div className="flex items-start justify-between mb-2">
                         <CardTitle className="text-3xl font-bold text-white group-hover:text-yellow-200 transition-colors">
-                          {usaha.nama}
+                          {wirausaha.nama_usaha}
                         </CardTitle>
                         <div className="flex items-center gap-1 text-white/80">
                           <MapPin className="h-4 w-4" />
-                          <span className="text-sm">{usaha.lokasi}</span>
+                          <span className="text-sm">{wirausaha.tipe_usaha || 'Online'}</span>
                         </div>
+                      </div>
+                      <div className="text-white/70 text-lg">
+                        oleh {wirausaha.user?.name || 'Anonim'}
                       </div>
                     </CardHeader>
                     
                     <CardContent className="p-0 mb-6">
-                      <p className="text-white/90 text-lg leading-relaxed mb-4">
-                        {usaha.deskripsi}
-                      </p>
-                      
                       <div className="flex items-center gap-4 text-white/70">
                         <div className="flex items-center gap-1">
                           <Users className="h-4 w-4" />
-                          <span className="text-sm">100+ Pelanggan</span>
+                          <span className="text-sm">Target: {wirausaha.target_pasar?.nama || 'Semua kalangan'}</span>
                         </div>
                         <div className="h-4 w-px bg-white/30"></div>
                         <div className="flex items-center gap-1">
                           <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                          <span className="text-sm">Aktif Hari Ini</span>
+                          <span className="text-sm">Aktif</span>
                         </div>
+                        {wirausaha.match_score > 0 && (
+                          <>
+                            <div className="h-4 w-px bg-white/30"></div>
+                            <div className="flex items-center gap-1">
+                              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                              <span className="text-sm">Rekomendasi</span>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </CardContent>
 
@@ -413,4 +318,6 @@ export default function Wirausaha() {
       </main>
     </div>
   );
-}
+};
+
+export default WirausahaPage;

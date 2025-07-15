@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\front\DashboardController;
+use App\Http\Controllers\front\WirausahaFrontController;
 use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\User;
@@ -55,9 +57,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // })->name('dashboard');
 
 
-    Route::get('home', function() {
-        return Inertia::render('front/dashboard');
-    })->name('home');
+    Route::get('home', [DashboardController::class, 'index'])->name('home');
+    Route::get('/getWirausaha', [DashboardController::class, 'getWirausaha']);
+    Route::get('wirausaha', [WirausahaFrontController::class, 'index'])->name('wirausaha.user');
     Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
   
 
