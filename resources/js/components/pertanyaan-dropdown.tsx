@@ -88,7 +88,7 @@ export const PertanyaanDropdown = () => {
 
     return (
         <div className="mx-auto max-w-4xl p-6">
-            <h2 className="mb-8 text-center text-2xl font-bold text-gray-800">Pertanyaan yang Sering Diajukan</h2>
+            {/* <h2 className="mb-8 text-center text-2xl font-bold text-gray-800">Pertanyaan yang Sering Diajukan</h2> */}
 
             <div className="space-y-3">
                 {faqs.map((faq, index) => (

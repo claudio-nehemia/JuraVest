@@ -1,7 +1,5 @@
-import FiturGrid from '@/components/fitur-grid';
 import HeroSlidder from '@/components/hero-slider';
 import Navbar from '@/components/navbar';
-import { PertanyaanDropdown } from '@/components/pertanyaan-dropdown';
 import WirausahaGrid from '@/components/wirausaha-grid';
 import useInView from '@/hooks/useInView'; // pastikan path-nya sesuai
 import { Head } from '@inertiajs/react';
@@ -24,8 +22,8 @@ export default function Dashboard() {
                 </p>
             </div>
             <WirausahaGrid />
-            <FiturGrid />
-            <PertanyaanDropdown />
+            {/* <FiturGrid /> */}
+            {/* <PertanyaanDropdown /> */}
         </section>
     );
 }
