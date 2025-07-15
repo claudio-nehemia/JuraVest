@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             JenisUsahaSeeder::class,
             TargetPasarSeeder::class,
             WirausahaSeeder::class,
-            InvestorSeeder::class
+            InvestorSeeder::class,
+            PekerjaanSeeder::class,
         ]);
     }
 }
