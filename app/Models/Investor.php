@@ -24,14 +24,6 @@ class Investor extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function jenisUsaha() {
-        return $this->belongsTo(JenisUsaha::class);
-    }
-
-    public function targetPasar() {
-        return $this->belongsTo(TargetPasar::class);
-    }
-
     // Accessor untuk foto profil URL
     public function getFotoProfilUrlAttribute()
     {

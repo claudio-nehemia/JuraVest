@@ -635,104 +635,103 @@ class RegisteredUserController extends Controller
     // 
     
     public function storeFormInvestor(Request $request)
-{
-    $request->validate([
-        'nama_investor' => 'required|string|max:50',
-        'tujuan_investasi' => 'required|string|min:10',
-        'target_pasar_ids' => 'required|array|min:1',
-        'target_pasar_ids.*' => 'integer|exists:target_pasars,id',
-        'jenis_usaha_ids' => 'required|array|min:1',
-        'jenis_usaha_ids.*' => 'integer|exists:jenis_usahas,id',
-    ]);
+    {
+        $request->validate([
+            'nama_investor' => 'required|string|max:50',
+            'tujuan_investasi' => 'required|string|min:10',
+            'target_pasar_ids' => 'required|array|min:1',
+            'target_pasar_ids.*' => 'integer|exists:target_pasars,id',
+            'jenis_usaha_ids' => 'required|array|min:1',
+            'jenis_usaha_ids.*' => 'integer|exists:jenis_usahas,id',
+        ]);
 
-    // Ambil data dari session
-    $step1 = session('registration_step1');
-    $step2 = session('registration_step2');
-    $step3 = session('registration_step3');
-    $step4 = session('registration_step4');
+        // Ambil data dari session
+        $step1 = session('registration_step1');
+        $step2 = session('registration_step2');
+        $step3 = session('registration_step3');
+        $step4 = session('registration_step4');
 
-    if (!$step1 || !$step2 || !$step3 || !$step4 || !$step2['completed'] || !$step3['completed'] || !$step4['completed']) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Data pendaftaran tidak lengkap. Silakan ulangi proses.'
-        ], 422);
-    }
-
-    try {
-        DB::beginTransaction();
-
-        // Cek email unik
-        $existingUser = User::where('email', $step1['email'])->first();
-        if ($existingUser) {
+        if (!$step1 || !$step2 || !$step3 || !$step4 || !$step2['completed'] || !$step3['completed'] || !$step4['completed']) {
             return response()->json([
                 'success' => false,
-                'message' => 'Email sudah terdaftar'
+                'message' => 'Data pendaftaran tidak lengkap. Silakan ulangi proses.'
             ], 422);
         }
 
-        // Buat user
-        $user = User::create([
-            'name' => $step1['nama'],
-            'email' => $step1['email'],
-            'no_telp' => $step1['no_telp'],
-            'password' => Hash::make($step2['password']),
-            'role_id' => $step4['role_id'],
-        ]);
+        try {
+            DB::beginTransaction();
 
-        // Simpan data diri
-        DataDiri::create([
-            'user_id' => $user->id,
-            'nama_lengkap' => $step3['nama_lengkap'],
-            'tanggal_lahir' => $step3['tanggal_lahir'],
-            'alamat' => $step3['alamat'],
-            'pendidikan_terakhir' => $step3['pendidikan_terakhir'],
-            'jenis_kelamin' => $step3['jenis_kelamin'],
-            'pekerjaan_id' => $step3['pekerjaan_id'],
-        ]);
+            // Cek email unik
+            $existingUser = User::where('email', $step1['email'])->first();
+            if ($existingUser) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email sudah terdaftar'
+                ], 422);
+            }
 
-        // Simpan data investor
-        $investor = Investor::create([
-            'user_id' => $user->id,
-            'nama_investor' => $request->nama_investor,
-            'tujuan_investasi' => $request->tujuan_investasi,
-        ]);
-
-        $investor->target_pasars()->sync($request->target_pasar_ids);
-        $investor->jenis_usahas()->sync($request->jenis_usaha_ids);
-
-        // Hapus sesi
-        session()->forget([
-            'registration_step1',
-            'registration_step2',
-            'registration_step3',
-            'registration_step4',
-            'registration_step5',
-        ]);
-
-        event(new Registered($user));
-        Auth::login($user);
-
-        DB::commit();
-
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Pendaftaran berhasil!',
-                'redirect' => route('dashboard'),
+            // Buat user
+            $user = User::create([
+                'name' => $step1['nama'],
+                'email' => $step1['email'],
+                'no_telp' => $step1['no_telp'],
+                'password' => Hash::make($step2['password']),
+                'role_id' => $step4['role_id'],
             ]);
+
+            // Simpan data diri
+            DataDiri::create([
+                'user_id' => $user->id,
+                'nama_lengkap' => $step3['nama_lengkap'],
+                'tanggal_lahir' => $step3['tanggal_lahir'],
+                'alamat' => $step3['alamat'],
+                'pendidikan_terakhir' => $step3['pendidikan_terakhir'],
+                'jenis_kelamin' => $step3['jenis_kelamin'],
+                'pekerjaan_id' => $step3['pekerjaan_id'],
+            ]);
+
+            // Simpan data investor
+            $investor = Investor::create([
+                'user_id' => $user->id,
+                'nama_investor' => $request->nama_investor,
+                'tujuan_investasi' => $request->tujuan_investasi,
+                'target_pasar_invest' => $request->target_pasar_ids,
+                'jenis_usaha_invest' => $request->jenis_usaha_ids,
+            ]);
+
+            // Hapus sesi
+            session()->forget([
+                'registration_step1',
+                'registration_step2',
+                'registration_step3',
+                'registration_step4',
+                'registration_step5',
+            ]);
+
+            event(new Registered($user));
+            Auth::login($user);
+
+            DB::commit();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pendaftaran berhasil!',
+                    'redirect' => route('dashboard'),
+                ]);
+            }
+            
+            return redirect()->route('dashboard')
+                ->with('success', 'Pendaftaran berhasil!');  
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Pendaftaran gagal: ' . $e->getMessage(),
+            ], 500);
         }
-        
-        return redirect()->route('dashboard')
-            ->with('success', 'Pendaftaran berhasil!');  
-        
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->json([
-            'success' => false,
-            'message' => 'Pendaftaran gagal: ' . $e->getMessage(),
-        ], 500);
     }
-}
 
     
     public function storeFormStatusUsahaBaru(Request $request)
