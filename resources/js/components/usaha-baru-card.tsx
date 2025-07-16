@@ -7,8 +7,45 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Wirausaha } from "@/types";
 
-export default function UsahaBaruCard() {
+interface UsahaBaruCardProps {
+    wirausaha: Wirausaha
+}
+
+export default function UsahaBaruCard( {wirausaha} : UsahaBaruCardProps) {
+    // Function to parse and format allocation data
+    const parseAlokasi = (alokasiString: string) => {
+        if (!alokasiString) return [];
+        
+        // Split by comma and parse each allocation
+        const allocations = alokasiString.split(',').map(item => {
+            const parts = item.trim().split(':');
+            if (parts.length === 2) {
+                const name = parts[0].trim();
+                const percentage = parseFloat(parts[1].trim().replace('%', ''));
+                return { name, percentage };
+            }
+            return null;
+        }).filter(Boolean);
+        
+        return allocations;
+    };
+
+    const allocations = parseAlokasi(wirausaha.usaha_baru?.alokasi_dana || '');
+    
+    // Colors for different allocation categories
+    const allocationColors = [
+        'bg-orange-500',
+        'bg-amber-500', 
+        'bg-yellow-500',
+        'bg-green-500',
+        'bg-blue-500',
+        'bg-purple-500',
+        'bg-pink-500',
+        'bg-red-500'
+    ];
+
     return (
         <div className="mt-8">
             <Card className="bg-white shadow-xl border-0 overflow-hidden">
@@ -39,7 +76,7 @@ export default function UsahaBaruCard() {
                                     <p className="text-gray-600 text-sm">Rencana tempat usaha</p>
                                 </div>
                             </div>
-                            <p className="text-lg font-semibold text-orange-700">Surabaya</p>
+                            <p className="text-lg font-semibold text-orange-700">{wirausaha.usaha_baru?.rencana_lokasi_operasional}</p>
                         </div>
 
                         {/* Tanggal Mulai */}
@@ -53,7 +90,7 @@ export default function UsahaBaruCard() {
                                     <p className="text-gray-600 text-sm">Target launching</p>
                                 </div>
                             </div>
-                            <p className="text-lg font-semibold text-amber-700">8 Agustus 2025</p>
+                            <p className="text-lg font-semibold text-amber-700">{wirausaha.usaha_baru?.rencana_mulai_usaha}</p>
                         </div>
                     </div>
 
@@ -67,28 +104,39 @@ export default function UsahaBaruCard() {
                         </div>
                         
                         <div className="bg-gray-50 rounded-xl p-6">
-                            <div className="grid md:grid-cols-2 gap-4 mb-4">
-                                <div className="flex items-center justify-between p-4 bg-white rounded-lg border-l-4 border-orange-500">
-                                    <span className="font-medium text-gray-700">Modal Properti</span>
-                                    <span className="text-2xl font-bold text-orange-600">50%</span>
+                            {allocations.length > 0 ? (
+                                <>
+                                    {/* Progress Bar Visual */}
+                                    <div className="w-full bg-gray-200 rounded-full h-4 mb-4 overflow-hidden flex">
+                                        {allocations.map((allocation, index) => (
+                                            <div
+                                                key={index}
+                                                className={`h-full ${allocationColors[index % allocationColors.length]}`}
+                                                style={{ width: `${allocation?.percentage}%` }}
+                                            />
+                                        ))}
+                                    </div>
+                                    
+                                    {/* Allocation Legend */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {allocations.map((allocation, index) => (
+                                            <div key={index} className="flex items-center gap-3">
+                                                <div className={`w-4 h-4 rounded ${allocationColors[index % allocationColors.length]}`} />
+                                                <span className="text-sm text-gray-700 flex-1">{allocation?.name}</span>
+                                                <span className="text-sm font-semibold text-gray-800">{allocation?.percentage}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <p className="text-gray-500 mb-2">Deskripsi Alokasi Dana</p>
+                                    <div className="w-full bg-gray-200 rounded-full h-4">
+                                        <div className="bg-orange-500 h-full rounded-full" style={{ width: '100%' }} />
+                                    </div>
+                                    <p className="text-sm text-gray-600 mt-2">Pengembangan aplikasi, server hosting, marketing digital, dan tim developer</p>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-white rounded-lg border-l-4 border-amber-500">
-                                    <span className="font-medium text-gray-700">Modal Makanan</span>
-                                    <span className="text-2xl font-bold text-amber-600">50%</span>
-                                </div>
-                            </div>
-                            
-                            {/* Progress Bar Visual */}
-                            <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-                                <div className="h-3 rounded-full flex">
-                                    <div className="w-1/2 bg-gradient-to-r from-orange-500 to-orange-400 rounded-l-full"></div>
-                                    <div className="w-1/2 bg-gradient-to-r from-amber-400 to-amber-500 rounded-r-full"></div>
-                                </div>
-                            </div>
-                            <div className="flex justify-between text-sm text-gray-600">
-                                <span>Properti</span>
-                                <span>Makanan</span>
-                            </div>
+                            )}
                         </div>
                     </div>
 
@@ -99,7 +147,15 @@ export default function UsahaBaruCard() {
                                 <DollarSign size={24}/>
                                 <h3 className="text-lg font-semibold">Perkiraan Dana Dibutuhkan</h3>
                             </div>
-                            <p className="text-3xl font-bold mb-1">Rp 10.000.000</p>
+                            <p className="text-3xl font-bold mb-1">
+                                {wirausaha.usaha_baru?.perkiraan_dana ? 
+                                    new Intl.NumberFormat('id-ID', { 
+                                        style: 'currency', 
+                                        currency: 'IDR' 
+                                    }).format(wirausaha.usaha_baru.perkiraan_dana) 
+                                    : 'Tidak tersedia'
+                                }
+                            </p>
                             <p className="text-green-100 text-sm">Estimasi modal awal yang diperlukan</p>
                         </div>
                     </div>
@@ -115,7 +171,7 @@ export default function UsahaBaruCard() {
                         
                         <div className="bg-gradient-to-br from-gray-50 to-orange-50/30 rounded-xl p-6 border border-gray-100">
                             <p className="text-gray-700 leading-relaxed">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit, eaque! Culpa dicta adipisci, eveniet totam dolorum tenetur eum provident dolore optio rem accusantium tempora animi eius reiciendis! Culpa, magni corrupti.
+                                {wirausaha.deskripsi || 'Deskripsi belum tersedia'}
                             </p>
                         </div>
                     </div>

@@ -14,7 +14,8 @@ class Wirausaha extends Model
         'usaha_baru',
         'usaha_ongoing',
         'tipe_usaha',
-        'foto_profil'
+        'foto_profil',
+        'deskripsi'
     ];
 
     protected $casts = [

@@ -24,6 +24,7 @@ interface UsahaOngoingData {
   rencana_penggunaan_dana: string;
   proyeksi_usaha: string;
   media_social: string;
+  kebutuhan_dana: string | number;
 }
 
 interface FormData {
@@ -33,6 +34,8 @@ interface FormData {
   target_pasar_id: string | number;
   tipe_usaha: string;
   usaha_ongoing: UsahaOngoingData;
+  foto_profil: File | string | null;
+  deskripsi: string;
   [key:string]:any;
 }
 
@@ -58,6 +61,8 @@ export default function OngoingForm({
     jenis_usaha_id: wirausaha?.jenis_usaha_id || '',
     target_pasar_id: wirausaha?.target_pasar_id || '',
     tipe_usaha: 'Usaha Ongoing',
+    foto_profil: null as File | null,
+    deskripsi: wirausaha?.deskripsi || '',
     usaha_ongoing: {
       lokasi_operasional: wirausaha?.usaha_ongoing?.lokasi_operasional || '',
       tahun_berdiri: wirausaha?.usaha_ongoing?.tahun_berdiri || '',
@@ -66,7 +71,8 @@ export default function OngoingForm({
       biaya_operasional: wirausaha?.usaha_ongoing?.biaya_operasional || '',
       rencana_penggunaan_dana: wirausaha?.usaha_ongoing?.rencana_penggunaan_dana || '',
       proyeksi_usaha: wirausaha?.usaha_ongoing?.proyeksi_usaha || '',
-      media_social: wirausaha?.usaha_ongoing?.media_social || ''
+      media_social: wirausaha?.usaha_ongoing?.media_social || '',
+      kebutuhan_dana: wirausaha?.usaha_ongoing?.kebutuhan_dana || ''
     }
   });
 
@@ -295,6 +301,20 @@ export default function OngoingForm({
                   </div>
                 </div>
 
+                <div className="flex flex-col space-y-0.5">
+                  <Label>Perkiraan Kebutuhan Dana</Label>
+                  <Input
+                    type="number"
+                    value={data.usaha_ongoing.kebutuhan_dana}
+                    onChange={(e) => updateUsahaOngoing('kebutuhan_dana', e.target.value)}
+                    placeholder="Masukkan kebutuhan dana"
+                  />
+                  <div className="min-h-[1rem]">
+                    {getError('usaha_ongoing.kebutuhan_dana') && 
+                      <InputError message={getError('usaha_ongoing.kebutuhan_dana')!} />}
+                  </div>
+                </div>
+
                 {/* Estimasi Omzet */}
                 <div className="flex flex-col space-y-0.5">
                   <Label>Estimasi Omzet (Rp)</Label>
@@ -372,6 +392,35 @@ export default function OngoingForm({
                     {getError('usaha_ongoing.proyeksi_usaha') && 
                       <InputError message={getError('usaha_ongoing.proyeksi_usaha')!} />}
                   </div>
+                </div>
+                <div className="col-span-2 flex flex-col space-y-0.5 mb-2">
+                <Label>Deskripsi Usaha</Label>
+                <textarea
+                  value={data.deskripsi}
+                  onChange={(e) => updateMainData('deskripsi', e.target.value)}
+                  rows={6}
+                  className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  placeholder="Jelaskan deskripsi usaha"
+                />
+                <div className="min-h-[1rem]">
+                  {getError('deskripsi') && 
+                    <InputError message={getError('deskripsi')!} />}
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-0.5 mb-2">
+              <Label>Icon</Label>
+                  {mode === 'edit' && wirausaha?.foto_profil_url && (
+                  <img src={wirausaha.foto_profil_url} alt={wirausaha.nama_usaha} className="mb-2 h-32 w-32 rounded object-cover border" />
+                      )}
+                      <Input 
+                          type="file" 
+                          accept="image/*"
+                          onChange={(e) => setData('foto_profil', e.target.files?.[0] || null)} 
+                      />
+                      <div className="min-h-[1rem]">
+                          {errors.foto_profil && <InputError message={errors.foto_profil} />}
+                      </div>
                 </div>
               </div>
             </CardContent>

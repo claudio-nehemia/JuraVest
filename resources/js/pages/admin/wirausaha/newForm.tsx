@@ -32,6 +32,7 @@
     tipe_usaha: string;
     usaha_baru: UsahaBaruData;
     foto_profil: File | string | null;
+    deskripsi: string;
     [key: string]: any; // This fixes the TypeScript error
   }
 
@@ -59,6 +60,8 @@
     target_pasar_id: wirausaha?.target_pasar_id || '',
     tipe_usaha: 'Usaha Baru',
     foto_profil: null as File | null,
+    deskripsi: wirausaha?.deskripsi || '',
+
     usaha_baru: {
       rencana_lokasi_operasional: wirausaha?.usaha_baru?.rencana_lokasi_operasional || '',
       rencana_mulai_usaha: wirausaha?.usaha_baru?.rencana_mulai_usaha || '',
@@ -323,6 +326,22 @@
                     </div>
                   </div>
 
+                  {/* Latar Belakang */}
+                  <div className="col-span-2 flex flex-col space-y-0.5 mb-2">
+                    <Label>Deskripsi Usaha</Label>
+                    <textarea
+                      value={data.deskripsi}
+                      onChange={(e) => updateMainData('deskripsi', e.target.value)}
+                      rows={6}
+                      className="min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      placeholder="Jelaskan deskripsi usaha"
+                    />
+                    <div className="min-h-[1rem]">
+                      {getError('deskripsi') && 
+                        <InputError message={getError('deskripsi')!} />}
+                    </div>
+                  </div>
+
                   <div className="flex flex-col space-y-0.5 mb-2">
                   <Label>Icon</Label>
                       {mode === 'edit' && wirausaha?.foto_profil_url && (
@@ -336,7 +355,7 @@
                           <div className="min-h-[1rem]">
                               {errors.foto_profil && <InputError message={errors.foto_profil} />}
                           </div>
-              </div>
+                    </div>
                 </div>
               </CardContent>
 

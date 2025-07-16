@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from '@inertiajs/react';
 import {
   Card,
   CardContent,
@@ -8,36 +9,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Search, Filter, MapPin, Star, Users } from 'lucide-react';
 import Navbar from '@/components/navbar';
-
-// TypeScript interfaces
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface JenisUsaha {
-  id: number;
-  nama: string;
-}
-
-interface TargetPasar {
-  id: number;
-  nama: string;
-}
-
-interface Wirausaha {
-  id: number;
-  nama_usaha: string;
-  foto_profil?: string;
-  jenis_usaha_id: number;
-  target_pasar_id: number;
-  tipe_usaha: string;
-  match_score: number;
-  user?: User;
-  jenis_usaha?: JenisUsaha;
-  target_pasar?: TargetPasar;
-}
+import { Wirausaha } from '@/types';
 
 interface JenisUsaha {
   id: number;
@@ -129,7 +101,7 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
     return rekomendasi.filter(wirausaha => {
       const matchesSearch = wirausaha.nama_usaha.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           wirausaha.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          wirausaha.jenis_usaha?.nama?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          wirausaha.jenis_usaha?.jenis_usaha?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           wirausaha.tipe_usaha?.toLowerCase().includes(searchTerm.toLowerCase());
       
       // ✅ Fixed - now comparing with the correct property from categories
@@ -168,7 +140,7 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
                 placeholder="Cari nama usaha, pemilik, atau jenis usaha..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm text-lg"
+                className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent backdrop-blur-sm text-lg"
               />
             </div>
 
@@ -243,7 +215,7 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
                     </div>
                     <div className="absolute top-4 left-4 glass-effect px-3 py-1 rounded-full">
                       <span className="text-white text-sm font-semibold">
-                        {wirausaha.jenis_usaha?.nama || 'Umum'}
+                        {wirausaha.jenis_usaha?.jenis_usaha || 'Umum'}
                       </span>
                     </div>
                     {wirausaha.match_score > 0 && (
@@ -263,11 +235,18 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
                         </CardTitle>
                         <div className="flex items-center gap-1 text-white/80">
                           <MapPin className="h-4 w-4" />
-                          <span className="text-sm">{wirausaha.tipe_usaha || 'Online'}</span>
+                          <span className="text-sm">{wirausaha.tipe_usaha === "Usaha Baru"
+                                                        ? wirausaha.usaha_baru?.rencana_lokasi_operasional
+                                                        : wirausaha.usaha_ongoing?.lokasi_operasional}</span>
                         </div>
                       </div>
                       <div className="text-white/70 text-lg">
-                        oleh {wirausaha.user?.name || 'Anonim'}
+                        oleh {`${wirausaha.user?.name} || ${wirausaha.user?.email}`}
+                      </div>
+                      <div className='text-white text-sm'>
+                        {wirausaha.tipe_usaha === "Usaha Baru"
+                            ? wirausaha.usaha_baru?.latar_belakang
+                            : wirausaha.usaha_ongoing?.proyeksi_usaha}
                       </div>
                     </CardHeader>
                     
@@ -275,12 +254,19 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
                       <div className="flex items-center gap-4 text-white/70">
                         <div className="flex items-center gap-1">
                           <Users className="h-4 w-4" />
-                          <span className="text-sm">Target: {wirausaha.target_pasar?.nama || 'Semua kalangan'}</span>
+                          <span className="text-sm">Target: {wirausaha.target_pasar?.target_pasar || 'Semua kalangan'}</span>
                         </div>
                         <div className="h-4 w-px bg-white/30"></div>
                         <div className="flex items-center gap-1">
                           <div className="h-2 w-2 bg-green-400 rounded-full"></div>
                           <span className="text-sm">Aktif</span>
+                        </div>
+                        <div className="h-4 w-px bg-white/30"></div>
+                        <div className="flex items-center gap-1">
+                          <div className="h-2 w-2 bg-green-400 rounded-full"></div>
+                          <span className="text-sm">{wirausaha.tipe_usaha === "Usaha Ongoing"
+                                                        ? "Usaha Berjalan"
+                                                        : "Usaha Baru"}</span>
                         </div>
                         {wirausaha.match_score > 0 && (
                           <>
@@ -295,10 +281,13 @@ const WirausahaPage: React.FC<WirausahaProps> = ({ rekomendasi = [], categories 
                     </CardContent>
 
                     <div className="flex items-center justify-between">
-                      <button className="group/btn bg-white/20 hover:bg-white/30 px-8 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 text-white font-semibold backdrop-blur-sm border border-white/30">
+                      <Link 
+                        href={`/wirausaha/${wirausaha.id}`}
+                        className="group/btn bg-white/20 hover:bg-white/30 px-8 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 text-white font-semibold backdrop-blur-sm border border-white/30"
+                      >
                         Lihat Detail
                         <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
-                      </button>
+                      </Link>
                       
                       <div className="flex gap-2">
                         <button className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30">

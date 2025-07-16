@@ -62,6 +62,7 @@ export interface UsahaOngoing {
   rencana_penggunaan_dana: string;
   proyeksi_usaha: string;
   media_social: string;
+  kebutuhan_dana: number;
 }
 
 export interface UsahaBaru {
@@ -87,6 +88,7 @@ export interface Wirausaha {
   target_pasar?: TargetPasar;
   foto_profil: string | null;
   foto_profil_url: string | null;
+  deskripsi: string;
   created_at: string;
   updated_at: string;
 }

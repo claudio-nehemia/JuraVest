@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Wirausaha } from '@/types';
-import { usePage } from '@inertiajs/react';
+import { usePage, Link } from '@inertiajs/react';
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Store, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -94,15 +94,13 @@ export default function WirausahaSlider() {
                                         const gradientColor = getGradientColor(kategori);
 
                                         return (
-                                            <Card
-                                                key={globalIndex}
-                                                className={`overflow-hidden shadow-lg transition-all duration-500 hover:scale-105 ${
-                                                    hoveredCard === globalIndex ? 'ring-4 ring-blue-200' : ''
-                                                } ${expanded === globalIndex ? 'h-auto' : 'h-[480px]'}`}
-                                                onMouseEnter={() => setHoveredCard(globalIndex)}
-                                                onMouseLeave={() => setHoveredCard(null)}
-                                            >
-                                                <div className={`h-48 bg-gradient-to-br ${gradientColor} relative`}>
+                                    
+                                            <Card key={globalIndex} className="relative overflow-hidden shadow-lg transition-all duration-500 hover:scale-105">
+                                                <div
+                                                    onClick={() => window.location.href = `/wirausaha/${wirausaha.id}`}
+                                                    className="cursor-pointer"
+                                                >
+                                                    <div className={`h-48 bg-gradient-to-br ${gradientColor} relative`}>
                                                     <div className="bg-opacity-90 absolute top-4 right-4 z-10 rounded-full bg-white px-3 py-1">
                                                         <span className="text-sm font-semibold text-gray-700">{kategori}</span>
                                                     </div>
@@ -111,53 +109,55 @@ export default function WirausahaSlider() {
                                                         alt={'fallback.png'}
                                                         className="h-full w-full object-cover"
                                                         onError={(e) => {
-                                                            const target = e.currentTarget;
-                                                            target.style.display = 'none';
+                                                        const target = e.currentTarget;
+                                                        target.style.display = 'none';
                                                         }}
                                                     />
-                                                </div>
+                                                    </div>
 
-                                                <CardHeader className="pb-4">
+                                                    <CardHeader className="pb-4 mt-4">
                                                     <CardTitle className="text-xl font-bold text-gray-800">{wirausaha.nama_usaha}</CardTitle>
-                                                </CardHeader>
+                                                    </CardHeader>
 
-                                                <CardContent className="pb-4">
-                                                    <CardDescription
-                                                        className={`text-gray-600 transition-all duration-300 ${expanded === globalIndex ? 'max-h-none' : 'line-clamp-3'}`}
-                                                    >
+                                                    <CardContent className="pb-4">
+                                                    <CardDescription className={`text-gray-600 transition-all duration-300 ${expanded === globalIndex ? 'max-h-none' : 'line-clamp-3'}`}>
                                                         {wirausaha.tipe_usaha === 'Usaha Baru'
-                                                            ? (wirausaha.usaha_baru?.latar_belakang ?? 'Lokasi belum tersedia')
-                                                            : (wirausaha.usaha_ongoing?.proyeksi_usaha ?? 'Proyeksi belum tersedia')}
+                                                        ? (wirausaha.usaha_baru?.latar_belakang ?? 'Lokasi belum tersedia')
+                                                        : (wirausaha.usaha_ongoing?.proyeksi_usaha ?? 'Proyeksi belum tersedia')}
                                                     </CardDescription>
+
                                                     {expanded === globalIndex && (
                                                         <div className="animate-fadeIn mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
-                                                            <h4 className="mb-2 font-semibold text-blue-800">Informasi Tambahan:</h4>
-                                                            <ul className="space-y-1 text-sm text-gray-600">
-                                                                <li>• Pemilik: {wirausaha.user?.name}</li>
-                                                                <li>
-                                                                    • Status:{' '}
-                                                                    {wirausaha.tipe_usaha === 'Usaha Ongoing' ? 'Usaha Berjalan' : 'Usaha Baru'}
-                                                                </li>
-                                                                <li>
-                                                                    {wirausaha.tipe_usaha === 'Usaha Ongoing'
-                                                                        ? `• Lokasi: ${wirausaha.usaha_ongoing.lokasi_operasional}`
-                                                                        : `• Rencana Lokasi: ${wirausaha.usaha_baru.rencana_lokasi_operasional}`}
-                                                                </li>
-                                                            </ul>
+                                                        <h4 className="mb-2 font-semibold text-blue-800">Informasi Tambahan:</h4>
+                                                        <ul className="space-y-1 text-sm text-gray-600">
+                                                            <li>• Pemilik: {wirausaha.user?.name}</li>
+                                                            <li>• Status: {wirausaha.tipe_usaha === 'Usaha Ongoing' ? 'Usaha Berjalan' : 'Usaha Baru'}</li>
+                                                            <li>
+                                                            {wirausaha.tipe_usaha === 'Usaha Ongoing'
+                                                                ? `• Lokasi: ${wirausaha.usaha_ongoing.lokasi_operasional}`
+                                                                : `• Rencana Lokasi: ${wirausaha.usaha_baru.rencana_lokasi_operasional}`}
+                                                            </li>
+                                                        </ul>
                                                         </div>
                                                     )}
-                                                </CardContent>
+                                                    </CardContent>
+                                                </div>
 
-                                                <CardFooter className="pt-0">
+                                                <CardFooter className="pt-0 z-10">
                                                     <button
-                                                        onClick={() => toggleExpand(globalIndex)}
-                                                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-white hover:scale-105"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation(); // cegah bubbling
+                                                        e.preventDefault();  // cegah link default
+                                                        toggleExpand(globalIndex);
+                                                    }}
+                                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 text-white hover:scale-105"
                                                     >
-                                                        <span>{expanded === globalIndex ? 'Sembunyikan Detail' : 'Lihat Detail'}</span>
-                                                        {expanded === globalIndex ? <ChevronUp /> : <ChevronDown />}
+                                                    <span>{expanded === globalIndex ? 'Sembunyikan Detail' : 'Lihat Detail'}</span>
+                                                    {expanded === globalIndex ? <ChevronUp /> : <ChevronDown />}
                                                     </button>
                                                 </CardFooter>
-                                            </Card>
+                                                </Card>
+
                                         );
                                     })}
                                 </div>

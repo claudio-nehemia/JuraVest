@@ -86,6 +86,7 @@ class WirausahaController extends Controller
                     'target_pasar_id' => 'required|exists:target_pasars,id',
                     'tipe_usaha' => 'required|string',
                     'foto_profil' => 'nullable|image|mimes:png,jpg,jpeg,webp',
+                    'deskripsi' => 'required|string',
 
                     // Validasi nested array
                     'usaha_ongoing' => 'required|array',
@@ -97,6 +98,7 @@ class WirausahaController extends Controller
                     'usaha_ongoing.rencana_penggunaan_dana' => 'required|string|min:10',
                     'usaha_ongoing.proyeksi_usaha' => 'required|string|min:10',
                     'usaha_ongoing.media_social' => 'required|string|min:3',
+                    'usaha_ongoing.kebutuhan_dana' => 'required|numeric'
                 ], [
                     'usaha_ongoing.required' => 'Data usaha ongoing tidak boleh kosong',
                     'usaha_ongoing.array' => 'Data usaha ongoing harus berupa array',
@@ -152,6 +154,7 @@ class WirausahaController extends Controller
                 'target_pasar_id' => 'required|exists:target_pasars,id',
                 'tipe_usaha' => 'required|string',
                 'foto_profil' => 'nullable|image|mimes:jpg,png,jpeg,webp',
+                'deskripsi' => 'required|string',
 
                 // Validasi nested array
                 'usaha_baru' => 'required|array',
@@ -257,7 +260,7 @@ class WirausahaController extends Controller
             'target_pasar_id' => 'required|exists:target_pasars,id',
             'tipe_usaha' => 'required|string',
             'foto_profil' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:2048', // Fixed typo dan tambah max size
-
+            'deskripsi' => 'required|string',
             // Validasi nested array
             'usaha_baru' => 'required|array',
             'usaha_baru.rencana_lokasi_operasional' => 'required|string|max:50',
@@ -294,6 +297,7 @@ class WirausahaController extends Controller
                 'jenis_usaha_id' => $validated['jenis_usaha_id'],
                 'target_pasar_id' => $validated['target_pasar_id'],
                 'tipe_usaha' => $validated['tipe_usaha'],
+                'deskripsi' => $validated['deskripsi']
             ];
 
             // Handle file upload
@@ -356,6 +360,7 @@ class WirausahaController extends Controller
                     'target_pasar_id' => 'required|exists:target_pasars,id',
                     'tipe_usaha' => 'required|string',
                     'foto_profil' => 'nullable|image',
+                    'deskripsi' => 'required|string',
 
                     // Validasi nested array
                     'usaha_ongoing' => 'required|array',
@@ -367,6 +372,7 @@ class WirausahaController extends Controller
                     'usaha_ongoing.rencana_penggunaan_dana' => 'required|string|min:10',
                     'usaha_ongoing.proyeksi_usaha' => 'required|string|min:10',
                     'usaha_ongoing.media_social' => 'required|string|min:3',
+                    'usaha_ongoing.kebutuhan_dana' => 'required|numeric'
                 ], [
                     'usaha_ongoing.required' => 'Data usaha ongoing tidak boleh kosong',
                     'usaha_ongoing.array' => 'Data usaha ongoing harus berupa array',

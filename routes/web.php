@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\front\DashboardController;
+use App\Http\Controllers\front\InvestorFrontController;
 use App\Http\Controllers\front\WirausahaFrontController;
 use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\WelcomeController;
@@ -64,7 +65,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('home', [DashboardController::class, 'index'])->name('home');
     Route::get('/getWirausaha', [DashboardController::class, 'getWirausaha']);
     Route::get('wirausaha', [WirausahaFrontController::class, 'index'])->name('wirausaha.user');
+    Route::get('investor', [InvestorFrontController::class, 'index'])->name('investor.user');
     Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
+    Route::get('/wirausaha', [WirausahaFrontController::class, 'index'])->name('wirausaha.index');
+    Route::get('/wirausaha/{wirausaha}', [WirausahaFrontController::class, 'detail'])->name('wirausaha.detail');
+    
   
 
     // Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
