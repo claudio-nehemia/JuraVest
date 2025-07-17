@@ -245,104 +245,104 @@ class WirausahaController extends Controller
      * Update the specified resource in storage.
      */
     public function newUpdate(Request $request, Wirausaha $wirausaha)
-{
-    \Log::info('Request data:', $request->all());
+    {
+        \Log::info('Request data:', $request->all());
 
-    $user = User::find($request->user_id);
-    \Log::info('User object:', ['user' => $user]);
-    
-    if ($user && $user->role_id === 2) {
-        // Validasi input
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'nama_usaha' => 'required|string|max:50',
-            'jenis_usaha_id' => 'required|exists:jenis_usahas,id',
-            'target_pasar_id' => 'required|exists:target_pasars,id',
-            'tipe_usaha' => 'required|string',
-            'foto_profil' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:2048', // Fixed typo dan tambah max size
-            'deskripsi' => 'required|string',
-            // Validasi nested array
-            'usaha_baru' => 'required|array',
-            'usaha_baru.rencana_lokasi_operasional' => 'required|string|max:50',
-            'usaha_baru.rencana_mulai_usaha' => 'required|string|max:4',
-            'usaha_baru.alokasi_dana' => 'required|string|min:10',
-            'usaha_baru.perkiraan_dana' => 'required|numeric|min:0',
-            'usaha_baru.latar_belakang' => 'required|string|min:10'
-        ], [
-            'user_id.required' => 'Pemilik usaha wajib dipilih',
-            'nama_usaha.required' => 'Nama usaha wajib diisi',
-            'jenis_usaha_id.required' => 'Jenis usaha wajib dipilih',
-            'target_pasar_id.required' => 'Target pasar wajib dipilih',
-            'foto_profil.image' => 'File harus berupa gambar',
-            'foto_profil.mimes' => 'File harus berformat jpg, png, jpeg, atau webp',
-            'foto_profil.max' => 'Ukuran file maksimal 2MB',
-            
-            'usaha_baru.required' => 'Data usaha baru tidak boleh kosong',
-            'usaha_baru.array' => 'Data usaha baru harus berupa array',
-            'usaha_baru.rencana_lokasi_operasional.required' => 'Rencana lokasi operasional wajib diisi',
-            'usaha_baru.rencana_mulai_usaha.required' => 'Rencana mulai usaha wajib diisi',
-            'usaha_baru.alokasi_dana.required' => 'Alokasi dana wajib diisi',
-            'usaha_baru.perkiraan_dana.required' => 'Perkiraan dana wajib diisi',
-            'usaha_baru.perkiraan_dana.numeric' => 'Perkiraan dana harus angka',
-            'usaha_baru.latar_belakang.required' => 'Latar belakang wajib diisi'
-        ]);
-
-        \Log::info('Validated data:', $validated);
-
-        try {
-            // Pisahkan data utama dan nested data
-            $mainData = [
-                'user_id' => $validated['user_id'],
-                'nama_usaha' => $validated['nama_usaha'],
-                'jenis_usaha_id' => $validated['jenis_usaha_id'],
-                'target_pasar_id' => $validated['target_pasar_id'],
-                'tipe_usaha' => $validated['tipe_usaha'],
-                'deskripsi' => $validated['deskripsi']
-            ];
-
-            // Handle file upload
-            if ($request->hasFile('foto_profil')) {
-                // Hapus foto lama jika ada
-                if ($wirausaha->foto_profil) {
-                    Storage::disk('public')->delete($wirausaha->foto_profil);
-                }
-                $mainData['foto_profil'] = $request->file('foto_profil')->store('wirausahas', 'public');
-            }
-
-            // Update data utama
-            $wirausaha->update($mainData);
-
-            // Handle nested data usaha_baru
-            // Asumsikan Anda memiliki relasi atau kolom JSON untuk usaha_baru
-            if (isset($validated['usaha_baru'])) {
-                // Jika usaha_baru adalah kolom JSON di tabel wirausahas
-                $wirausaha->update(['usaha_baru' => $validated['usaha_baru']]);
+        $user = User::find($request->user_id);
+        \Log::info('User object:', ['user' => $user]);
+        
+        if ($user && $user->role_id === 2) {
+            // Validasi input
+            $validated = $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'nama_usaha' => 'required|string|max:50',
+                'jenis_usaha_id' => 'required|exists:jenis_usahas,id',
+                'target_pasar_id' => 'required|exists:target_pasars,id',
+                'tipe_usaha' => 'required|string',
+                'foto_profil' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:2048', // Fixed typo dan tambah max size
+                'deskripsi' => 'required|string',
+                // Validasi nested array
+                'usaha_baru' => 'required|array',
+                'usaha_baru.rencana_lokasi_operasional' => 'required|string|max:50',
+                'usaha_baru.rencana_mulai_usaha' => 'required|string|max:4',
+                'usaha_baru.alokasi_dana' => 'required|string|min:10',
+                'usaha_baru.perkiraan_dana' => 'required|numeric|min:0',
+                'usaha_baru.latar_belakang' => 'required|string|min:10'
+            ], [
+                'user_id.required' => 'Pemilik usaha wajib dipilih',
+                'nama_usaha.required' => 'Nama usaha wajib diisi',
+                'jenis_usaha_id.required' => 'Jenis usaha wajib dipilih',
+                'target_pasar_id.required' => 'Target pasar wajib dipilih',
+                'foto_profil.image' => 'File harus berupa gambar',
+                'foto_profil.mimes' => 'File harus berformat jpg, png, jpeg, atau webp',
+                'foto_profil.max' => 'Ukuran file maksimal 2MB',
                 
-                // ATAU jika Anda memiliki tabel terpisah untuk usaha_baru dengan relasi
-                // $wirausaha->usahaBaru()->updateOrCreate(
-                //     ['wirausaha_id' => $wirausaha->id],
-                //     $validated['usaha_baru']
-                // );
-            }
-
-            return redirect()->route('newWirausaha.index')
-                ->with('success', 'Data berhasil diperbarui!');
-                
-        } catch (\Exception $e) {
-            \Log::error('Error updating wirausaha:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'usaha_baru.required' => 'Data usaha baru tidak boleh kosong',
+                'usaha_baru.array' => 'Data usaha baru harus berupa array',
+                'usaha_baru.rencana_lokasi_operasional.required' => 'Rencana lokasi operasional wajib diisi',
+                'usaha_baru.rencana_mulai_usaha.required' => 'Rencana mulai usaha wajib diisi',
+                'usaha_baru.alokasi_dana.required' => 'Alokasi dana wajib diisi',
+                'usaha_baru.perkiraan_dana.required' => 'Perkiraan dana wajib diisi',
+                'usaha_baru.perkiraan_dana.numeric' => 'Perkiraan dana harus angka',
+                'usaha_baru.latar_belakang.required' => 'Latar belakang wajib diisi'
             ]);
-            
+
+            \Log::info('Validated data:', $validated);
+
+            try {
+                // Pisahkan data utama dan nested data
+                $mainData = [
+                    'user_id' => $validated['user_id'],
+                    'nama_usaha' => $validated['nama_usaha'],
+                    'jenis_usaha_id' => $validated['jenis_usaha_id'],
+                    'target_pasar_id' => $validated['target_pasar_id'],
+                    'tipe_usaha' => $validated['tipe_usaha'],
+                    'deskripsi' => $validated['deskripsi']
+                ];
+
+                // Handle file upload
+                if ($request->hasFile('foto_profil')) {
+                    // Hapus foto lama jika ada
+                    if ($wirausaha->foto_profil) {
+                        Storage::disk('public')->delete($wirausaha->foto_profil);
+                    }
+                    $mainData['foto_profil'] = $request->file('foto_profil')->store('wirausahas', 'public');
+                }
+
+                // Update data utama
+                $wirausaha->update($mainData);
+
+                // Handle nested data usaha_baru
+                // Asumsikan Anda memiliki relasi atau kolom JSON untuk usaha_baru
+                if (isset($validated['usaha_baru'])) {
+                    // Jika usaha_baru adalah kolom JSON di tabel wirausahas
+                    $wirausaha->update(['usaha_baru' => $validated['usaha_baru']]);
+                    
+                    // ATAU jika Anda memiliki tabel terpisah untuk usaha_baru dengan relasi
+                    // $wirausaha->usahaBaru()->updateOrCreate(
+                    //     ['wirausaha_id' => $wirausaha->id],
+                    //     $validated['usaha_baru']
+                    // );
+                }
+
+                return redirect()->route('newWirausaha.index')
+                    ->with('success', 'Data berhasil diperbarui!');
+                    
+            } catch (\Exception $e) {
+                \Log::error('Error updating wirausaha:', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                return redirect()->back()->withErrors([
+                    'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+                ])->withInput();
+            }
+        } else {
             return redirect()->back()->withErrors([
-                'message' => 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage()
+                'user_id' => 'User yang dipilih bukan wirausaha yang valid'
             ])->withInput();
         }
-    } else {
-        return redirect()->back()->withErrors([
-            'user_id' => 'User yang dipilih bukan wirausaha yang valid'
-        ])->withInput();
-    }
 }
 
     public function ongoingUpdate(Request $request, Wirausaha $wirausaha)

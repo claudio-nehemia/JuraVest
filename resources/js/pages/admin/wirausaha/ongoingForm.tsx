@@ -28,6 +28,7 @@ interface UsahaOngoingData {
 }
 
 interface FormData {
+  _method?: string; // Tambahkan ini untuk method spoofing
   user_id: string | number;
   nama_usaha: string;
   jenis_usaha_id: string | number;
@@ -55,7 +56,8 @@ export default function OngoingForm({
   wirausaha,
   flash 
 }: Props) {
-  const { data, setData, post, put, processing, errors } = useForm<FormData>({
+  const { data, setData, post, processing, errors } = useForm<FormData>({
+    _method: mode === 'edit' ? 'PUT' : undefined, // Tambahkan method spoofing
     user_id: wirausaha?.user_id || '',
     nama_usaha: wirausaha?.nama_usaha || '',
     jenis_usaha_id: wirausaha?.jenis_usaha_id || '',
@@ -94,7 +96,7 @@ export default function OngoingForm({
     e.preventDefault();
     
     // Validasi field utama
-    const requiredMainFields: (keyof Omit<FormData, 'usaha_ongoing' | 'tipe_usaha'>)[] = [
+    const requiredMainFields: (keyof Omit<FormData, 'usaha_ongoing' | 'tipe_usaha' | '_method'>)[] = [
       'user_id', 
       'nama_usaha', 
       'jenis_usaha_id', 
@@ -142,7 +144,9 @@ export default function OngoingForm({
         }
       });
     } else {
-      put(`/admin/wirausaha/ongoingUpdate/${wirausaha!.id}`, {
+      // Gunakan post dengan _method: 'PUT' untuk handle file upload, sama seperti NewForm
+      post(`/admin/wirausaha/ongoingUpdate/${wirausaha!.id}`, {
+        forceFormData: true, // Penting untuk file upload
         onError: (errors) => {
           console.error('Validation errors:', errors);
         },

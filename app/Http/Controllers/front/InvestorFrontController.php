@@ -79,4 +79,8 @@ class InvestorFrontController extends Controller
             'targetPasarList' => $targetPasarList // Add this line
         ]);
     }
+
+    public function detail() {
+        
+    }
 }
