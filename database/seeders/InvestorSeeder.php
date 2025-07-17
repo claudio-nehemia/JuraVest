@@ -7,8 +7,6 @@ use App\Models\JenisUsaha;
 use App\Models\TargetPasar;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
-
 
 class InvestorSeeder extends Seeder
 {
@@ -16,7 +14,6 @@ class InvestorSeeder extends Seeder
     {
         $jenisUsahaIds = JenisUsaha::pluck('id')->toArray();
         $targetPasarIds = TargetPasar::pluck('id')->toArray();
-        $faker = Faker::create();
 
         $tujuanInvestasiSamples = [
             'Mendukung UMKM lokal',
@@ -34,13 +31,34 @@ class InvestorSeeder extends Seeder
         })->take(15)->get();
 
         foreach ($investorUsers as $user) {
+            // Random tujuan investasi tanpa faker
+            $randomTujuan = $tujuanInvestasiSamples[array_rand($tujuanInvestasiSamples)];
+            
+            // Random jenis usaha (2-3 item)
+            $randomJenisUsaha = [];
+            if (!empty($jenisUsahaIds)) {
+                $shuffledJenis = $jenisUsahaIds;
+                shuffle($shuffledJenis);
+                $count = mt_rand(2, min(3, count($jenisUsahaIds)));
+                $randomJenisUsaha = array_slice($shuffledJenis, 0, $count);
+            }
+            
+            // Random target pasar (2-3 item)
+            $randomTargetPasar = [];
+            if (!empty($targetPasarIds)) {
+                $shuffledTarget = $targetPasarIds;
+                shuffle($shuffledTarget);
+                $count = mt_rand(2, min(3, count($targetPasarIds)));
+                $randomTargetPasar = array_slice($shuffledTarget, 0, $count);
+            }
+
             Investor::create([
                 'nama_investor' => $user->name,
                 'user_id' => $user->id,
-                'tujuan_investasi' => $faker->randomElement($tujuanInvestasiSamples),
+                'tujuan_investasi' => $randomTujuan,
                 'foto_profil' => null,
-                'jenis_usaha_invest' => $faker->randomElements($jenisUsahaIds, rand(2, 3)),
-                'target_pasar_invest' => $faker->randomElements($targetPasarIds, rand(2, 3)),
+                'jenis_usaha_invest' => $randomJenisUsaha,
+                'target_pasar_invest' => $randomTargetPasar,
             ]);
         }
     }
