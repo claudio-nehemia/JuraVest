@@ -18,6 +18,7 @@ use App\Http\Controllers\JenisUsahaController;
 use App\Http\Controllers\TargetPasarController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Settings\ProfileController;
 
 // Route::get('/', function () {
 //     return Inertia::render('front/welcome');
@@ -25,9 +26,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', [WelcomeController::class, 'redirectIfLoggedIn'])->name('welcome');
 
-Route::get('profile', function() {
-    return Inertia::render('front/profile');
-})->name('user.profile');
+// Route::get('profile', function() {
+//     return Inertia::render('settings/profile');
+// })->name('user.profile');
 
 Route::get('wirausaha-detail', function() {
     return Inertia::render('front/wirausaha-detail');
@@ -60,7 +61,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('dashboard', function () {
     //     return Inertia::render('dashboard');
     // })->name('dashboard');
-
+    Route::prefix('settings')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile/user-info', [ProfileController::class, 'updateUserInfo'])->name('profile.updateUserInfo');
+        Route::post('/profile/public', [ProfileController::class, 'updatePublicProfile'])->name('profile.updatePublicProfile');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
     Route::get('home', [DashboardController::class, 'index'])->name('home');
     Route::get('/getWirausaha', [DashboardController::class, 'getWirausaha']);
