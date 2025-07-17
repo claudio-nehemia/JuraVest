@@ -20,8 +20,14 @@ export default function Dashboard() {
                 >
                     Rekomendasi Untuk Anda
                 </p>
-            </div>
+            </div>      
             <WirausahaGrid />
+            <a href="/wirausaha" className='text-black text-center text-orange-400 font-bold mt-2 hover:text-orange-600'>
+            <p>
+                Lihat lebih banyak....
+            </p>
+            </a>      
+
             {/* <FiturGrid /> */}
             {/* <PertanyaanDropdown /> */}
         </section>

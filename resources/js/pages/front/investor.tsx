@@ -230,11 +230,13 @@ const InvestorPage: React.FC<InvestorPageProps> = ({
           ) : (
             filteredInvestors.map((investor, index) => (
               <Card
+                onClick={() => window.location.href = `/investor/${investor.id}`}
                 key={`${investor.id}-${index}`}
                 className={`
                   group overflow-hidden border-none
                   bg-gradient-to-r ${generateRandomGradient(index)} 
                   shadow-2xl transition-all duration-500 ease-out
+                  cursor-pointer
                   hover:shadow-blue-500/25 hover:-translate-y-1
                   slide-in-left rounded-3xl
                   ${investor.match_score > 0 ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}
@@ -328,19 +330,15 @@ const InvestorPage: React.FC<InvestorPageProps> = ({
                     </CardContent>
 
                     <div className="flex items-center justify-between">
-                      <button className="group/btn bg-white/20 hover:bg-white/30 px-8 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 text-white font-semibold backdrop-blur-sm border border-white/30">
-                        Kontak Investor
-                        <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
-                      </button>
-
-                       <Link 
-                        href={`/investor/${investor.id}`}
-                        className="group/btn bg-white/20 hover:bg-white/30 px-8 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 text-white font-semibold backdrop-blur-sm border border-white/30"
+                      <Link 
+                        href={`/chat/${investor.user?.id}`}
+                        onClick={(e) => e.stopPropagation()} // biar gak buka detail card
                       >
-                        Lihat Detail
-                        <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
-                      </Link>
-                      
+                        <button className="group/btn bg-white/20 hover:bg-white/30 px-8 py-3 rounded-2xl transition-all duration-300 flex items-center gap-3 text-white font-semibold backdrop-blur-sm border border-white/30">
+                          Kontak Investor
+                          <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
+                        </button>
+                      </Link>                              
                       <div className="flex gap-2">
                         <button className="p-3 rounded-full bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30">
                           <span className="text-white text-lg">💬</span>

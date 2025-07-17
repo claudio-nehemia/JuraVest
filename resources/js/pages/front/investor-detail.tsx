@@ -32,8 +32,8 @@ export default function InvestorDetail({ investor, pekerjaan, jenis_usaha_labels
                             <div className="relative">
                                 <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
                                     <img
-                                        src={investor.foto_profil_url || investor.foto_profil || "/pengusaha.jpg"}
-                                        alt="Investor"
+                                        src={`/storage/${investor.foto_profil}`}
+                                        alt="/pengusaha.jpg"
                                         className="rounded-full w-full h-full object-cover"
                                     />
                                 </div>
@@ -142,7 +142,7 @@ export default function InvestorDetail({ investor, pekerjaan, jenis_usaha_labels
                 {/* Stats & Info */}
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
                     <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white text-center">
-                        <h3 className="text-3xl font-bold mb-2">ID: {investor.id}</h3>
+                        <h3 className="text-3xl font-bold mb-2">ID: {investor.nama_investor}</h3>
                         <p className="text-green-100">Investor ID</p>
                     </div>
                     

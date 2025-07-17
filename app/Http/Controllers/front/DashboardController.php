@@ -55,4 +55,10 @@ class DashboardController extends Controller
             'rekomendasi' => $rekomendasi
         ]);
     }
+
+    public function investorIndex() {
+        $user = Auth::user();
+        $wirausaha = $user->wirausaha;
+        $investor = $user->investor;
+    }
 }

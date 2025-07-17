@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Pencil, PlusCircle, Trash2 } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
 type User = {
     id: number;
@@ -150,11 +151,12 @@ export default function User() {
                         </div>
 
                         {/* Pagination mirip produk */}
-                        <div className="flex items-center justify-center space-x-2 pb-4">
+                       <div className="flex items-center justify-center space-x-2 pb-4">
                             {usersPaginated.links.map((link, i) => (
-                                <Link
+                                <button
                                     key={i}
-                                    href={link.url ?? '#'}
+                                    disabled={!link.url}
+                                    onClick={() => link.url && router.visit(link.url)}
                                     className={`rounded border px-3 py-1 text-sm transition ${
                                         link.active ? 'bg-gray-900 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
                                     } ${!link.url ? 'pointer-events-none opacity-50' : ''}`}
