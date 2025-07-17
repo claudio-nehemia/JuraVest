@@ -204,11 +204,12 @@ export default function UsahaOngoingCard( {wirausaha} : UsahaOngoingCardProps) {
                 {/* Action Footer */}
                 <CardFooter className="bg-white p-6">
                     <div className="flex flex-col sm:flex-row gap-3 justify-center w-full">
-                        <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl">
-                            <TrendingUp size={20}/>
-                            Tertarik Berinvestasi
-                        </button>
-                   
+                        <a href={`/chat/${3}`} className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <button>
+                                <TrendingUp size={20}/>
+                                Tertarik Berinvestasi
+                            </button>                     
+                        </a>            
                     </div>
                 </CardFooter>
             </Card>

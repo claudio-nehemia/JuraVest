@@ -33,10 +33,13 @@
 
         <title inertia>{{ config('app.name', 'Juravest') }}</title>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
+        {{-- TAMBAHKAN FAVICON MONTANA.PNG DI SINI --}}
+        <link rel="icon" type="image/png" href="{{ asset('jura-logo.jpg') }}">
+        <link rel="shortcut icon" type="image/png" href="{{ asset('jura-logo.jpg') }}">
+        
+        {{-- Optional: Tambahkan untuk berbagai device --}}
+        <link rel="apple-touch-icon" href="{{ asset('jura-logo.jpg') }}">
+        <meta name="msapplication-TileImage" content="{{ asset('jura-logo.jpg') }}">
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
