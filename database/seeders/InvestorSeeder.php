@@ -7,6 +7,8 @@ use App\Models\JenisUsaha;
 use App\Models\TargetPasar;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+
 
 class InvestorSeeder extends Seeder
 {
@@ -14,6 +16,7 @@ class InvestorSeeder extends Seeder
     {
         $jenisUsahaIds = JenisUsaha::pluck('id')->toArray();
         $targetPasarIds = TargetPasar::pluck('id')->toArray();
+        $faker = Faker::create();
 
         $tujuanInvestasiSamples = [
             'Mendukung UMKM lokal',
@@ -34,10 +37,10 @@ class InvestorSeeder extends Seeder
             Investor::create([
                 'nama_investor' => $user->name,
                 'user_id' => $user->id,
-                'tujuan_investasi' => fake()->randomElement($tujuanInvestasiSamples),
+                'tujuan_investasi' => $faker->randomElement($tujuanInvestasiSamples),
                 'foto_profil' => null,
-                'jenis_usaha_invest' => fake()->randomElements($jenisUsahaIds, rand(2, 3)),
-                'target_pasar_invest' => fake()->randomElements($targetPasarIds, rand(2, 3)),
+                'jenis_usaha_invest' => $faker->randomElements($jenisUsahaIds, rand(2, 3)),
+                'target_pasar_invest' => $faker->randomElements($targetPasarIds, rand(2, 3)),
             ]);
         }
     }
