@@ -8,16 +8,10 @@ import { Investor } from '@/types';
 
 interface InvestorGridProps {
     investor: Investor[];
-    pekerjaan: string;
-    jenis_usaha_labels: string[];
-    target_pasar_labels: string[];
 }
 
 export default function InvestorGrid({
-  investor = [], // Add default empty array
-  pekerjaan = '', // Add default empty string
-  jenis_usaha_labels = [], // Add default empty array
-  target_pasar_labels = [] // Add default empty array
+  investor = [] // Simplified props - data sudah include labels
 } : InvestorGridProps) {
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -138,9 +132,10 @@ export default function InvestorGrid({
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                   {slide.map((investorItem, cardIndex) => {
                     const globalIndex = slideIndex * 4 + cardIndex;
-                    // Add null checks for investor properties
-                    const investorJenisUsaha = investorItem.jenis_usaha_labels || jenis_usaha_labels || [];
-                    const investorTargetPasar = investorItem.target_pasar_labels || target_pasar_labels || [];
+                    // Sekarang setiap investor sudah punya labels sendiri
+                    const investorJenisUsaha = investorItem.jenis_usaha_labels || [];
+                    const investorTargetPasar = investorItem.target_pasar_labels || [];
+                    const investorPekerjaan = investorItem.pekerjaan || 'Tidak diketahui';
                     
                     const kategori = investorJenisUsaha?.[0] ?? 'default';
                     const gradientColor = getGradientColor(kategori);
@@ -181,7 +176,7 @@ export default function InvestorGrid({
                               <span>{investorJenisUsaha.length > 0 ? investorJenisUsaha.join(', ') : 'Tidak ada jenis usaha'}</span>
                             </div>
 
-                            {/* Tampilkan jenis usaha seperti di InvestorDetail */}
+                            {/* Tampilkan jenis usaha */}
                             <div className="mt-4">
                               <h4 className="font-semibold text-gray-800 mb-2">Jenis Usaha:</h4>
                               <div className="flex flex-wrap gap-2">
@@ -193,7 +188,7 @@ export default function InvestorGrid({
                               </div>
                             </div>
 
-                            {/* Tampilkan target pasar seperti di InvestorDetail */}
+                            {/* Tampilkan target pasar */}
                             <div className="mt-4">
                               <h4 className="font-semibold text-gray-800 mb-2">Target Pasar:</h4>
                               <div className="flex flex-wrap gap-2">
@@ -208,9 +203,9 @@ export default function InvestorGrid({
                             {expanded === globalIndex && (
                               <div className="animate-fadeIn mt-4 rounded-lg border border-blue-100 bg-blue-50 p-4">
                                 <h4 className="mb-2 font-semibold text-blue-800">Informasi Tambahan:</h4>
-                                  <ul className="space-y-1 text-sm text-gray-600 p-2 break-words whitespace-normal w-full">
+                                <ul className="space-y-1 text-sm text-gray-600 p-2 break-words whitespace-normal w-full">
                                   <li>• Akun: {investorItem.user?.email || 'Tidak tersedia'}</li>
-                                  <li>• Pekerjaan: {pekerjaan || 'Tidak tersedia'}</li>
+                                  <li>• Pekerjaan: {investorPekerjaan}</li>
                                 </ul>
                               </div>
                             )}

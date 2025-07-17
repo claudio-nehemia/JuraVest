@@ -1,6 +1,7 @@
 import { Mail, Briefcase, Target, Users, UtensilsCrossed, Star, TrendingUp, Award } from "lucide-react";
 import Navbar from "@/components/navbar";
 import { Investor } from "@/types";
+import { Link } from "@inertiajs/react";
 
 interface User {
   id: number;
@@ -157,10 +158,10 @@ export default function InvestorDetail({ investor, pekerjaan, jenis_usaha_labels
                     <div className="text-center">
                         <h3 className="text-xl font-bold text-gray-800 mb-4">Tertarik untuk Berkolaborasi?</h3>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                            <Link href={`/chat/${investor.user?.id}`} className="flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-8 py-3 rounded-xl font-semibold hover:from-orange-600 hover:to-amber-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                                 <Mail size={20}/>
                                 Hubungi Investor
-                            </button>
+                            </Link>
                             <button className="flex items-center justify-center gap-2 bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold border-2 border-orange-500 hover:bg-orange-50 transition-all duration-300">
                                 <Target size={20}/>
                                 Lihat Portofolio
