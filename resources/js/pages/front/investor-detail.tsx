@@ -1,7 +1,25 @@
 import { Mail, Briefcase, Target, Users, UtensilsCrossed, Star, TrendingUp, Award } from "lucide-react";
 import Navbar from "@/components/navbar";
+import { Investor } from "@/types";
 
-export default function InvestorDetail() {
+interface User {
+  id: number;
+  nama: string;
+  email: string;
+  pekerjaan: string;
+}
+
+interface InvestorDetailProps {
+    investor: Investor;
+    pekerjaan: string;
+    jenis_usaha_labels: string[];
+    target_pasar_labels: string[];
+}
+
+// Props dari Laravel controller
+
+export default function InvestorDetail({ investor, pekerjaan, jenis_usaha_labels, target_pasar_labels }: InvestorDetailProps) {
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 mb-4">
             <Navbar/>
@@ -14,9 +32,9 @@ export default function InvestorDetail() {
                             <div className="relative">
                                 <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
                                     <img
-                                        src="/pengusaha.jpg"
+                                        src={investor.foto_profil_url || investor.foto_profil || "/pengusaha.jpg"}
                                         alt="Investor"
-                                        className="rounded-full"
+                                        className="rounded-full w-full h-full object-cover"
                                     />
                                 </div>
                                 <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center border-3 border-white">
@@ -26,16 +44,16 @@ export default function InvestorDetail() {
                             
                             {/* Profile Info */}
                             <div className="text-center md:text-left text-white flex-1">
-                                <h1 className="text-3xl font-bold mb-2">Bang Jago</h1>
+                                <h1 className="text-3xl font-bold mb-2">{investor.nama_investor}</h1>
                                 <p className="text-white/90 text-lg mb-4">Investor Profesional</p>
                                 <div className="flex flex-col sm:flex-row gap-4">
                                     <div className="flex items-center gap-2">
                                         <Mail size={18}/>
-                                        <span>aaaaa@gmail.com</span>
+                                        <span>{investor.user?.email}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Briefcase size={18}/>
-                                        <span>Dokter</span>
+                                        <span>{pekerjaan}</span>
                                     </div>
                                 </div>
                             </div>
@@ -64,8 +82,15 @@ export default function InvestorDetail() {
                             </div>
                         </div>
                         <div className="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-4 border border-orange-100">
-                            <p className="text-2xl font-bold text-orange-700">Mahasiswa</p>
-                            <p className="text-gray-600 text-sm mt-1">Segmen pasar yang diminati untuk investasi</p>
+                            <p className="text-lg font-bold text-orange-700 mb-2">{target_pasar_labels.join(", ")}</p>
+                            <p className="text-gray-600 text-sm">Segmen pasar yang diminati untuk investasi</p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {target_pasar_labels.map((label, index) => (
+                                    <span key={index} className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-medium">
+                                        {label}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -80,8 +105,15 @@ export default function InvestorDetail() {
                             </div>
                         </div>
                         <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-lg p-4 border border-amber-100">
-                            <p className="text-2xl font-bold text-amber-700">Makanan</p>
-                            <p className="text-gray-600 text-sm mt-1">Industri yang menjadi fokus investasi</p>
+                            <p className="text-lg font-bold text-amber-700 mb-2">{jenis_usaha_labels.join(", ")}</p>
+                            <p className="text-gray-600 text-sm">Industri yang menjadi fokus investasi</p>
+                            <div className="flex flex-wrap gap-2 mt-3">
+                                {jenis_usaha_labels.map((label, index) => (
+                                    <span key={index} className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">
+                                        {label}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -100,29 +132,23 @@ export default function InvestorDetail() {
                     
                     <div className="bg-gradient-to-br from-gray-50 to-orange-50/30 rounded-xl p-6 border border-gray-100">
                         <div className="prose prose-gray max-w-none">
-                            <p className="text-gray-700 leading-relaxed mb-4">
-                                Sebagai investor profesional yang berpengalaman, tujuan utama saya dalam berinvestasi adalah untuk mencapai pertumbuhan modal yang optimal melalui strategi investasi yang terukur dan berkelanjutan. Saya percaya bahwa dengan memilih peluang investasi yang tepat di sektor makanan yang menargetkan segmen mahasiswa, potensi return yang menguntungkan dapat dicapai sambil tetap mempertahankan profil risiko yang sesuai.
-                            </p>
-                            <p className="text-gray-700 leading-relaxed mb-4">
-                                Selain aspek finansial, saya juga memiliki komitmen kuat untuk menciptakan dampak sosial yang positif melalui investasi. Dengan fokus pada pengembangan wirausaha muda, khususnya mahasiswa yang memiliki ide bisnis inovatif di bidang kuliner, saya berharap dapat berkontribusi dalam menciptakan ekosistem kewirausahaan yang sehat dan berkelanjutan. Dukungan yang diberikan tidak hanya berupa modal, tetapi juga mentoring dan akses ke jaringan bisnis yang lebih luas.
-                            </p>
-                            <p className="text-gray-700 leading-relaxed">
-                                Dalam jangka panjang, investasi ini juga bertujuan untuk diversifikasi portofolio dengan memperluas jangkauan ke berbagai sub-sektor dalam industri makanan. Strategi diversifikasi ini memungkinkan mitigasi risiko yang lebih baik sambil membuka peluang untuk eksplorasi model bisnis baru yang sesuai dengan tren pasar terkini, terutama yang berkaitan dengan preferensi konsumen muda dan inovasi teknologi dalam industri F&B.
+                            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                                {investor.tujuan_investasi}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Stats & Experience */}
+                {/* Stats & Info */}
                 <div className="grid md:grid-cols-2 gap-6 mb-8">
                     <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white text-center">
-                        <h3 className="text-3xl font-bold mb-2">12+</h3>
-                        <p className="text-green-100">Investasi Aktif</p>
+                        <h3 className="text-3xl font-bold mb-2">ID: {investor.id}</h3>
+                        <p className="text-green-100">Investor ID</p>
                     </div>
                     
                     <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-6 text-white text-center">
-                        <h3 className="text-3xl font-bold mb-2">5 Tahun</h3>
-                        <p className="text-blue-100">Pengalaman Investasi</p>
+                        <h3 className="text-3xl font-bold mb-2">{jenis_usaha_labels.length + target_pasar_labels.length}</h3>
+                        <p className="text-blue-100">Total Preferensi</p>
                     </div>
                 </div>
 

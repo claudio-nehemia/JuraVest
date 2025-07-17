@@ -69,6 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardAdminController::class, 'index'])->name('dashboard');
     Route::get('/wirausaha', [WirausahaFrontController::class, 'index'])->name('wirausaha.index');
     Route::get('/wirausaha/{wirausaha}', [WirausahaFrontController::class, 'detail'])->name('wirausaha.detail');
+    Route::get('/investor/{investor}', [InvestorFrontController::class, 'detail'])->name('investor.detail');
     
   
 

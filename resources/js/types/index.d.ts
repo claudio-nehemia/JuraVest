@@ -10,6 +10,20 @@ export interface BreadcrumbItem {
     href: string;
 }
 
+export interface Pekerjaan {
+  id: number;
+  job: string;
+}
+
+export interface DataDiri {
+  id: number;
+  user_id: number;
+  nama_lengkap: string;
+  tanggal_lahir: string;
+  alamat: string;
+  pendidikan_terakhir: string;
+}
+
 export interface NavGroup {
     title: string;
     items: NavItem[];
@@ -31,6 +45,21 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface Investor {
+  id:number;
+  nama_investor: string;
+  user_id: number;
+  target_pasar_invest: number[];
+  jenis_usaha_invest: number[];
+  user?: User;
+  tujuan_investasi: string;
+  pekerjaan?: string;
+  jenis_usaha_labels: string[];
+  target_pasar_labels: string[];
+  foto_profil: string | null;
+  foto_profil_url: string | null
+}
+
 export interface User {
     id: number;
     name: string;
@@ -38,6 +67,7 @@ export interface User {
     role_id: number;
     avatar?: string;
     email_verified_at: string | null;
+    dataDiri: DataDiri;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...

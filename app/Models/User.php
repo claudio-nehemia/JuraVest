@@ -53,7 +53,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function dataDiris() 
+    public function dataDiri() 
     {
         return $this->hasOne(DataDiri::class);
     }

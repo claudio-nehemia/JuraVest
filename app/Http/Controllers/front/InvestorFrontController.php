@@ -19,8 +19,14 @@ class InvestorFrontController extends Controller
         $investor = $user->investor;
         $wirausaha = $user->wirausaha;
         $category = JenisUsaha::all();
-        $targetPasarList = TargetPasar::all(); // Add this line to get target pasar list
-        $listInvestor = Investor::with('user')->get();
+        $targetPasarList = TargetPasar::all();
+        
+        // Eager load untuk optimasi
+        $listInvestor = Investor::with([
+            'user',
+            'user.dataDiri',
+            'user.dataDiri.pekerjaan'
+        ])->get();
 
         if ($wirausaha) {
             $jenisUsaha = $wirausaha->jenis_usaha_id;
@@ -38,6 +44,8 @@ class InvestorFrontController extends Controller
                 }
 
                 $item->match_score = $score;
+                // Tambahkan pekerjaan langsung ke object
+                $item->pekerjaan = $item->user?->dataDiri?->pekerjaan?->job ?? 'Tidak diketahui';
 
                 return $item;
             });
@@ -57,12 +65,14 @@ class InvestorFrontController extends Controller
                 }
 
                 $item->match_score = $score;
+                $item->pekerjaan = $item->user?->dataDiri?->pekerjaan?->job ?? 'Tidak diketahui';
 
                 return $item;
             });
         } else {
             $scored = $listInvestor->map(function ($item) {
                 $item->match_score = 0;
+                $item->pekerjaan = $item->user?->dataDiri?->pekerjaan?->job ?? 'Tidak diketahui';
                 return $item;
             });
         }
@@ -71,16 +81,65 @@ class InvestorFrontController extends Controller
 
         Log::info('Urutan:', ['data' => $sorted]);
         
-
-        // Fix: Change the render path to 'front/investor' instead of 'front/wirausaha'
         return Inertia::render('front/investor', [
             'rekomendasi' => $sorted,
             'categories' => $category,
-            'targetPasarList' => $targetPasarList // Add this line
+            'targetPasarList' => $targetPasarList
         ]);
     }
 
-    public function detail() {
+    public function detail(Investor $investor) {
+        // Eager load semua relasi yang dibutuhkan
+        $investor->load([
+            'user',
+            'user.dataDiri',
+            'user.dataDiri.pekerjaan'
+        ]);
         
+        // Ambil data pekerjaan dengan fallback
+        $pekerjaan = $investor->user?->dataDiri?->pekerjaan?->job ?? 'Tidak diketahui';
+        
+        // Ambil data referensi
+        $jenisUsahas = JenisUsaha::select('id', 'jenis_usaha')->get();
+        $targetPasars = TargetPasar::select('id', 'target_pasar')->get();
+
+        // Cari label jenis_usaha_invest
+        $jenisUsahaLabels = [];
+        if ($investor->jenis_usaha_invest && is_array($investor->jenis_usaha_invest)) {
+            $jenisUsahaLabels = $jenisUsahas->whereIn('id', $investor->jenis_usaha_invest)->pluck('jenis_usaha')->toArray();
+        }
+
+        // Cari label target_pasar_invest
+        $targetPasarLabels = [];
+        if ($investor->target_pasar_invest && is_array($investor->target_pasar_invest)) {
+            $targetPasarLabels = $targetPasars->whereIn('id', $investor->target_pasar_invest)->pluck('target_pasar')->toArray();
+        }
+
+        // Tambahkan informasi tambahan untuk investor
+        $investorData = $investor->toArray();
+        $investorData['pekerjaan'] = $pekerjaan;
+        $investorData['jenis_usaha_labels'] = $jenisUsahaLabels;
+        $investorData['target_pasar_labels'] = $targetPasarLabels;
+
+        return Inertia::render('front/investor-detail', [
+            'investor' => $investorData,
+            'pekerjaan' => $pekerjaan,
+            'jenis_usaha_labels' => $jenisUsahaLabels,
+            'target_pasar_labels' => $targetPasarLabels
+        ]);
+    }
+
+    // Method tambahan untuk mendapatkan statistik investor
+    public function getInvestorStats(Investor $investor) {
+        $totalInvestments = $investor->investments()->count() ?? 0;
+        $activeInvestments = $investor->investments()->where('status', 'active')->count() ?? 0;
+        $successRate = $totalInvestments > 0 ? ($activeInvestments / $totalInvestments) * 100 : 0;
+
+        return [
+            'total_investments' => $totalInvestments,
+            'active_investments' => $activeInvestments,
+            'success_rate' => round($successRate, 2),
+            'experience_years' => $investor->created_at->diffInYears(now())
+        ];
     }
 }
