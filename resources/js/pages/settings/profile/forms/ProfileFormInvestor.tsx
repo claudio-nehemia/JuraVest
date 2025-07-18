@@ -44,6 +44,16 @@ export default function ProfileFormInvestor({
         }
     };
 
+    // Helper function to safely create object URL
+    const createPreviewUrl = (file: File | null): string | null => {
+        if (file instanceof File) {
+            return URL.createObjectURL(file);
+        }
+        return null;
+    };
+
+    const previewUrl = createPreviewUrl(data.foto_profil);
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
             <div className="mx-auto max-w-5xl px-4">
@@ -87,9 +97,9 @@ export default function ProfileFormInvestor({
                         <div className="relative mb-6">
                             <div className="relative">
                                 <div className="border-gradient-to-r flex h-40 w-40 items-center justify-center rounded-2xl border-4 bg-gradient-to-br from-amber-50 from-amber-200 to-orange-50 to-orange-200 shadow-2xl">
-                                    {data.foto_profil ? (
+                                    {previewUrl ? (
                                         <img
-                                            src={URL.createObjectURL(data.foto_profil)}
+                                            src={previewUrl}
                                             alt="Preview"
                                             className="h-full w-full rounded-xl object-cover"
                                         />

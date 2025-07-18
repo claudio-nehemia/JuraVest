@@ -30,7 +30,7 @@ class ProfileController extends Controller
             'role',
             'investor',
             'wirausaha',
-            'dataDiris',
+        'dataDiri',
         ]);
         $role = $user->role?->role_name;
         $investor = $user->investor;
